@@ -4,6 +4,7 @@
     "declaration": false,
     "declarationMap": false,
     "sourceMap": false,
-    "removeComments": true,
+    // ライセンス管理のため
+    "removeComments": false,
   }
 }

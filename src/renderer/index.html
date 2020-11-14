@@ -1,12 +1,54 @@
 <!DOCTYPE html>
 <html lang="jp">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <p>TEST</p>
-  <input type="text">
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Setting - OLCV</title>
+  </head>
+  <body>
+    <div>
+      <div class="left">
+        <label for="url"><h1>URL</h1></label>
+        <input type="text" id="url" name="url" class="url" />
+      </div>
+      <div class="right">
+        <label for="css"><h1>CSS</h1></label>
+        <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <h1>画面配置</h1>
+        <div>
+          <label for="right">右側に配置</label>
+          <input type="checkbox" name="right" id="right" />
+        </div>
+        <div>
+          <label for="bottom">下部に配置</label>
+          <input type="checkbox" name="bottom" id="bottom" />
+        </div>
+      </div>
+
+      <div>
+        <h1>コメント欄サイズ</h1>
+        <div>
+          <span><label for="width" class="col-1">幅</label></span>
+          <span><input type="number" name="width" id="width" class="col-2" /></span>
+        </div>
+        <div>
+          <span><label for="height" class="col-1">高さ</label></span>
+          <span><input type="number" name="height" id="height" class="col-2" /></span>
+        </div>
+      </div>
+    </div>
+    <hr />
+    <div>
+      <button id="save" class="save">保存</button>
+      <button id="reset" class="reset">設定を初期化する</button>
+    </div>
+    <footer>
+      <div id="version"></div>
+    </footer>
+  </body>
 </html>

@@ -1,3 +1,17 @@
 {
-  
+  plugins: ['stylelint-scss', 'stylelint-order'],
+  extends: [
+    'stylelint-config-standard',
+    'stylelint-prettier/recommended',
+  ],
+  rules: {
+    'selector-type-no-unknown': [
+      true,
+      {
+        "ignore": [
+          "custom-elements"
+        ]
+      }
+    ],
+  },
 }

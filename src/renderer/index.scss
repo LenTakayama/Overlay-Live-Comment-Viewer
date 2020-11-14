@@ -1,3 +1,59 @@
-p {
-  color: crimson;
+body {
+  text-align: center;
+  font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN',
+    'Hiragino Sans', Meiryo, sans-serif;
+  background-color: rgb(43, 39, 39);
+  color: aliceblue;
+}
+input,
+textarea {
+  background-color: rgb(78, 78, 78);
+  color: white;
+  border-radius: 5px;
+}
+h1 {
+  margin-bottom: 10px;
+}
+button {
+  position: relative;
+  display: inline-block;
+  padding: 0.25em 0.5em;
+  text-decoration: none;
+  color: white;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
+  &:hover {
+    box-shadow: none;
+    text-shadow: none;
+  }
+}
+.row {
+  display: flex;
+}
+.col-1 {
+  display: inline-block;
+  width: 50px;
+}
+.col-2 {
+  display: inline-block;
+  width: 80px;
+}
+.reset {
+  background: crimson;
+  border: solid 1px rgb(156, 13, 41);
+  &:hover {
+    border: solid 1px rgb(224, 70, 101);
+  }
+}
+.save {
+  background: dodgerblue;
+  border: solid 1px rgb(21, 85, 148);
+  &:hover {
+    border: solid 1px rgb(98, 171, 245);
+  }
+}
+textarea,
+.url {
+  width: 95%;
 }
