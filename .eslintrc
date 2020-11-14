@@ -1,15 +1,22 @@
 {
-  "extends": ["eslint:recommended", "plugin:prettier/recommended"],
-  "plugins": [],
+  "extends": [
+    "eslint:recommended",
+    "plugin:security/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "plugins": ["security"],
   "parser": "babel-eslint",
   "env": { "browser": true, "node": true, "es6": true },
-  "rules": {},
+  "rules": {
+    "no-console": "warn"
+  },
   "overrides": [
     {
       "files": ["*.ts", "*.tsx"],
       "extends": [
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:security/recommended",
         "prettier/@typescript-eslint"
       ],
       "plugins": ["@typescript-eslint"],

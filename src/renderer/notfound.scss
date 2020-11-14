@@ -1,0 +1,12 @@
+body {
+  background-color: rgba(255, 255, 255, 0);
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
+}
+
+h1,
+p {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
