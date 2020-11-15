@@ -24,15 +24,21 @@
 
 ## これから対応すること
 
-* Hot Reload（開発者向け）
 * YouTube以外のコメントを表示
 * 翻訳機能
 * 自動アップデート
+* ロゴをいい感じにする
+* Hot Reload（開発者向け）
+* テストコードの整備（開発者向け）
 
 ## デフォルトのコメント表示
 
  Chat v2.0 Style Generator日本語版からCSSをお借りしました。
  <http://css4obs.starfree.jp/>
+
+## ロゴ
+
+ Wixロゴメーカーでロゴを作成しました<https://ja.wix.com/logo/maker>
 
 ## 質問とか要望とか開発とか
 

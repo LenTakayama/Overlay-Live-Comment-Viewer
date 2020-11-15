@@ -199,7 +199,7 @@ const createReadmeWindow = () => {
 
 const createMenu = () => {
   tray = new Tray(
-    nativeImage.createFromPath(resolve(getExtraDirectory(), 'icon.png'))
+    nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
   );
   menu = Menu.buildFromTemplate([
     {
