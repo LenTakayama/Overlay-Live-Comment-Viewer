@@ -1,50 +1,51 @@
-name: CD
+# TODO: 動くようにする
+# name: CD
 
-on:
-  pull_request:
-    branches: [develop, master]
+# on:
+#   pull_request:
+#     branches: [develop, master]
 
-jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+# jobs:
+#   build:
+#     runs-on: ${{ matrix.os }}
 
-    strategy:
-      matrix:
-        os: [windows-2016]
+#     strategy:
+#       matrix:
+#         os: [windows-2016]
 
-    steps:
-      - name: Context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - uses: actions/checkout@v1
-        with:
-          fetch-depth: 1
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12.x
-      - name: npm install
-        run: |
-          npm install
-      - name: Eslint fix
-        run: |
-          npx eslint --fix
-      - name: production Build
-        run: |
-          npm run production
-      - name: Cleanup artifacts
-        run: |
-          npx rimraf "dist/!(*.exe|*.deb|*.AppImage|*.dmg)"
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: ${{ matrix.os }}
-          path: dist
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: 'dist/**'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#     steps:
+#       - name: Context
+#         env:
+#           GITHUB_CONTEXT: ${{ toJson(github) }}
+#         run: echo "$GITHUB_CONTEXT"
+#       - uses: actions/checkout@v1
+#         with:
+#           fetch-depth: 1
+#       - name: Use Node.js 12.x
+#         uses: actions/setup-node@v1
+#         with:
+#           node-version: 12.x
+#       - name: npm install
+#         run: |
+#           npm install
+#       - name: Eslint fix
+#         run: |
+#           npx eslint --fix
+#       - name: production Build
+#         run: |
+#           npm run production
+#       - name: Cleanup artifacts
+#         run: |
+#           npx rimraf "dist/!(*.exe|*.deb|*.AppImage|*.dmg)"
+#       - name: Upload artifacts
+#         uses: actions/upload-artifact@v2
+#         with:
+#           name: ${{ matrix.os }}
+#           path: dist
+#       - name: Release
+#         uses: softprops/action-gh-release@v1
+#         if: startsWith(github.ref, 'refs/tags/')
+#         with:
+#           files: 'dist/**'
+#         env:
+#           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
