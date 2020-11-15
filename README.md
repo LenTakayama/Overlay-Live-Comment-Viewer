@@ -1,5 +1,8 @@
 # Overlay-Live-Comment-Viewer
 
+![CI](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CI/badge.svg?branch=master)
+![CD](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CD/badge.svg?branch=master)
+
 ## できること
 
 * 常に前面にYouTube Liveのコメントが表示されます
