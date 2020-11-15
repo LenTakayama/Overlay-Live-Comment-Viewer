@@ -24,10 +24,13 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 12.x
-      - name: npm run install
+      - name: npm install
         run: |
           npm install
-      - name: Publish
+      - name: Eslint fix
+        run: |
+          npx eslint --fix
+      - name: production Build
         run: |
           npm run production
       - name: Cleanup artifacts
