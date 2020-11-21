@@ -1,6 +1,10 @@
-<!-- markdownlint-disable single-h1 -->
-<!-- すべての項目を埋めなくてよい -->
+---
+name: Question
+about: Describe this issue template's purpose here.
+title: ''
+labels: bug
+assignees: ''
 
-# 期待する状態
+---
 
-# 現状・行った操作
+
