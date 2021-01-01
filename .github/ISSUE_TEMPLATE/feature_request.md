@@ -1,20 +1,15 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: 機能要求
+about: なにか改修・追加してほしい機能があればこちらから
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
+<!-- markdownlint-disable single-h1 -->
+<!-- すべての項目を埋めなくてよい -->
+# 概要・目的
+<!-- ざっくりとどのような機能改善を望むのか、それによって何が改善されるのか -->
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
-
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
-
-**Additional context**
-Add any other context or screenshots about the feature request here.
+# 詳細な内容
+<!-- より踏み込んで具体的に解決策があれば記入してください -->

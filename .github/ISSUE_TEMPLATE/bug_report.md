@@ -1,38 +1,26 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: バグ報告
+about: 未知のバグを確認した場合こちらから報告をお願いします
 title: ''
 labels: bug
 assignees: ''
 
 ---
+<!-- markdownlint-disable single-h1 -->
+<!-- すべての項目を埋めなくてよいです -->
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+# 概要
+<!-- 起きているバグの内容や事象をざっくりと -->
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+# 再現手順
+<!-- どうやったらそのバグが起きるのか、画像もあれば貼り付けてください -->
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+1. ここに再現手順
 
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
+# 期待される動作
+<!-- バグが解消された場合どのような動作になるのか -->
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+# 環境
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+* OS:
+* アプリバージョン：
