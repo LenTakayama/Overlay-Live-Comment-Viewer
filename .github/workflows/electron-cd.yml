@@ -27,6 +27,8 @@ jobs:
         run: npm ci
       - name: Build production
         run: npm run production
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Cleanup artifacts
         run: npx rimraf "dist/!(*.exe|*.deb|*.AppImage|*.dmg)"
       - name: Upload artifacts
