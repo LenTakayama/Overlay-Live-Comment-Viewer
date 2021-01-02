@@ -14,8 +14,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install package
         run: npm ci
-      # - name: Run Jest
-      #   run: npx jest --coverage --json --outputFile="jest.results.json"
+      - name: Run Jest
+        run: npx jest --coverage --json --outputFile="jest.results.json"
       - name: Show test result
         uses: mattallty/jest-github-action@v1
         env:
