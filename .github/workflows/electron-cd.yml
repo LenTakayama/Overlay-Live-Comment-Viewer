@@ -28,15 +28,17 @@ jobs:
         id: npm-cache
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: ${{ steps.npm-cache.outputs.dir }}
-      #     key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-node-v${{ matrix.node }}-
-      #       ${{ runner.os }}-node-
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-v${{ matrix.node }}-
+            ${{ runner.os }}-node-
       - name: Install package
-        run: npm ci
+        run: |
+          npm cache verify
+          npm ci
       - name: Build production
         run: npm run production
         env:
