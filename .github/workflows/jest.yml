@@ -15,7 +15,7 @@ jobs:
       - name: Install package
         run: npm ci
       - name: Run Jest
-        run: npx jest --json --outputFile="jest.results.json"
+        run: npm run jest -- --json --outputFile="jest.results.json"
       - name: Show test result
         uses: mattallty/jest-github-action@v1
         env:
