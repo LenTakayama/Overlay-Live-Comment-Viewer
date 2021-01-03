@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Install package
-        run: npm ci
+        run: npm install
       - name: Run Jest
         run: npm run jest -- --json --outputFile="jest.results.json"
       - name: Show test result
