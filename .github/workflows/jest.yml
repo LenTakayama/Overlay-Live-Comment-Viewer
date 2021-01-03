@@ -21,7 +21,6 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: npm i -g npm
-      - run: rm -rf node_modules
       # - name: Get npm cache directory
       #   id: npm-cache
       #   run: |
@@ -35,6 +34,8 @@ jobs:
             ${{ runner.os }}-node-
       - name: Install package
         run: npm install
+      - if: failure()
+        run: ls -ltr | tail -1 | cat
       - name: Run Jest
         run: npm run jest -- --json --outputFile="jest.results.json"
       - name: Show test result
