@@ -16,6 +16,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - run: npm i -g npm
       # - name: Setup Node.js
       #   uses: actions/setup-node@v2
       #   with:
