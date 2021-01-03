@@ -7,18 +7,12 @@ on:
 jobs:
   test:
     name: Test
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
       - name: Install package
-        run: |
-          npm cache clean --force
-          npm ci
+        run: npm ci
       - name: Run Jest
         run: npm run jest -- --json --outputFile="jest.results.json"
       - name: Show test result
