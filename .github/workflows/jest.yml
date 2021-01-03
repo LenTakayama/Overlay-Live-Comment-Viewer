@@ -33,7 +33,7 @@ jobs:
       #       ${{ runner.os }}-node-
       - name: Install package
         run: |
-          npm cache verify
+          npm cache clean --force
           npm ci
       - name: Run Jest
         run: npm run jest -- --json --outputFile="jest.results.json"

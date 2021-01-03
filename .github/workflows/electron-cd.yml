@@ -37,7 +37,7 @@ jobs:
       #       ${{ runner.os }}-node-
       - name: Install package
         run: |
-          npm cache verify
+          npm cache clean --force
           npm ci
       - name: Build production
         run: npm run production
