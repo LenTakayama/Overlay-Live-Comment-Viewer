@@ -12,6 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest]
+        node: [12.18.3]
 
     steps:
       - name: Set git to use LF
@@ -22,7 +23,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '12.18.3'
+          node-version: ${{ matrix.node }}
       - name: Get npm cache directory
         id: npm-cache
         run: |
@@ -30,8 +31,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ matrix.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
+            ${{ runner.os }}-node-v${{ matrix.node }}-
             ${{ runner.os }}-node-
       - name: Install package
         run: npm ci
