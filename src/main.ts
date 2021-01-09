@@ -15,6 +15,7 @@ import Store from 'electron-store';
 import { resolve, join } from 'path';
 import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
 import { readFileSync } from 'fs';
+import '@/src/autoUpdater';
 
 const store = new Store({
   name: 'config',
