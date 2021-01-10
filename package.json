@@ -18,34 +18,6 @@
     "serve": "electron .",
     "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app"
   },
-  "build": {
-    "appId": "Overlay-Live-Comment-Viewer",
-    "productName": "Overlay Live Comment Viewer",
-    "directories": {
-      "buildResources": "public",
-      "output": "dist"
-    },
-    "files": [
-      "build",
-      "package.json",
-      "package-lock.json"
-    ],
-    "extraResources": [
-      "public"
-    ],
-    "mac": {
-      "target": [
-        "dmg"
-      ]
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LenTakayama/Overlay-Live-Comment-Viewer.git"
