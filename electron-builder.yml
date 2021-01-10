@@ -1,5 +1,5 @@
 appId: 'Overlay-Live-Comment-Viewer'
-productName: 'Overlay Live Comment Viewer'
+productName: 'OverlayLiveCommentViewer'
 directories:
   buildResources: public
   output: dist
