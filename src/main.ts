@@ -12,6 +12,7 @@ import {
   MenuItem,
 } from 'electron';
 import Store from 'electron-store';
+import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
 import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
 import { readFileSync } from 'fs';
@@ -235,8 +236,14 @@ const createMenu = () => {
         }
       },
     },
+    { type: 'separator' },
     {
       id: '4',
+      label: '更新確認',
+      click: () => autoUpdater.checkForUpdatesAndNotify(),
+    },
+    {
+      id: '5',
       label: 'ヘルプ',
       click: () => {
         if (readmeWindow) {
@@ -248,7 +255,7 @@ const createMenu = () => {
     },
     { type: 'separator' },
     {
-      id: '5',
+      id: '6',
       label: '終了',
       click: () => {
         tray = null;
