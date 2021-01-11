@@ -5,7 +5,7 @@
   "main": "build/main.js",
   "scripts": {
     "develop": "run-s clean:output build:dev serve",
-    "production": "run-s clean:output clean:cache build:pro package:winx64",
+    "production": "run-s clean:output clean:cache build:pro package:winx86",
     "jest": "jest",
     "e2e": "echo todo",
     "lint": "eslint src",
@@ -13,7 +13,8 @@
     "clean:cache": "rimraf node_modules/.cache",
     "build:dev": "cross-env NODE_ENV=\"development\" webpack --progress",
     "build:pro": "cross-env NODE_ENV=\"production\" webpack --progress",
-    "package:winx64": "electron-builder --win --x64",
+    "package:winx64": "electron-builder --win --x64 --config ./electron-builder-x64.yml",
+    "package:winx86": "electron-builder --win --ia32",
     "package:macx64": "electron-builder --mac --x64",
     "serve": "electron .",
     "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app"
