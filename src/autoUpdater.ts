@@ -1,4 +1,4 @@
-import { app } from 'electron';
+import { app, dialog } from 'electron';
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import log from 'electron-log';
 
@@ -8,7 +8,12 @@ autoUpdater.allowPrerelease = false;
 
 log.info('App starting...');
 autoUpdater.on('error', (err: Error) => {
-  log.error('Error in auto updater. ' + err);
+  log.error(`Error in auto updater. ${err.message}`);
+  log.error(err);
+  dialog.showErrorBox(
+    '自動更新に失敗しました',
+    `自動更新実行中にエラーが発生しました。再度更新チェックをお願いします。\n何度試してもエラーが解消しない場合Twitterで@len_takayama宛に連絡かGitHubでIssuesまたはDiscussionsを開いてください。\n\nError Message:\n${err.message}`
+  );
 });
 autoUpdater.on('checking-for-update', () => {
   log.info('Checking for update...');
