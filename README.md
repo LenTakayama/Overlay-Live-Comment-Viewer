@@ -1,7 +1,7 @@
 # Overlay-Live-Comment-Viewer
 
-![CI](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CI/badge.svg?branch=master)
-![CD](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CD/badge.svg?branch=master)
+![CI](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CI/badge.svg)
+![CD](https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/workflows/CD(delivery)/badge.svg)
 
 ## できること
 
