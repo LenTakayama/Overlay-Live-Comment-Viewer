@@ -1,20 +1,24 @@
-name: 'Jest CI'
+name: 'CD(deployment)'
 
 on:
-  pull_request:
-    branches: [develop, master]
+  push:
+    branches: [master]
 
 jobs:
-  test:
-    name: Test
+  release:
+    name: Release
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [windows-latest]
         node: [12.18.3]
 
     steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -32,12 +36,13 @@ jobs:
             ${{ runner.os }}-node-v${{ matrix.node }}-
             ${{ runner.os }}-node-
       - name: Install package
-        run: npm ci
-      - name: Run Jest
-        run: npm run jest -- --json --outputFile="jest.results.json"
-      - name: Show test result
-        uses: mattallty/jest-github-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm ci
+          npm audit fix
+      - name: Build and Draft release
+        uses: samuelmeuli/action-electron-builder@v1
         with:
-          test-command: 'npm run jest'
+          github_token: ${{ secrets.github_token }}
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
+          build_script_name: build:pro
+          args: '--win --ia32'
