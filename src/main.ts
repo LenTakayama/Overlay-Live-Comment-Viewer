@@ -16,10 +16,24 @@ import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
 import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
 import { readFileSync } from 'fs';
+import '@/types/glabal';
+import AutoLaunch from 'auto-launch';
 import '@/src/autoUpdater';
 
 const store = new Store({
   name: 'config',
+});
+
+// TODO: 自動起動を設定から選べるようにする
+const autoLauncher = new AutoLaunch({
+  name: 'Overlay-Live-Comment-Viewer',
+  path: app.getPath('exe'),
+});
+autoLauncher.isEnabled().then((enabled: boolean) => {
+  if (enabled || process.env.NODE_ENV === 'development') {
+    return;
+  }
+  autoLauncher.enable();
 });
 
 let commentWindow: BrowserWindow | null = null;
