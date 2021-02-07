@@ -16,10 +16,24 @@ import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
 import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
 import { readFileSync } from 'fs';
+import log from 'electron-log';
 import '@/src/autoUpdater';
 
 const store = new Store({
   name: 'config',
+});
+log.transports.file.level = 'info';
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  if (variables.electronDefaultDir && variables.fileName) {
+    return join(variables.electronDefaultDir, variables.fileName);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return join(variables.libraryDefaultDir, variables.fileName!);
+  }
+};
+// とりあえず未確認のエラーをハンドリング
+log.catchErrors({
+  showDialog: true,
 });
 
 let commentWindow: BrowserWindow | null = null;

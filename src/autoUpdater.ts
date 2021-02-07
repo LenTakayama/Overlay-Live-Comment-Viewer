@@ -1,8 +1,17 @@
 import { app, dialog } from 'electron';
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import log from 'electron-log';
+import { join } from 'path';
 
 log.transports.file.level = 'info';
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  if (variables.electronDefaultDir && variables.fileName) {
+    return join(variables.electronDefaultDir, variables.fileName);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return join(variables.libraryDefaultDir, variables.fileName!);
+  }
+};
 autoUpdater.logger = log;
 autoUpdater.allowPrerelease = false;
 
@@ -14,6 +23,10 @@ autoUpdater.on('error', (err: Error) => {
     '自動更新に失敗しました',
     `自動更新実行中にエラーが発生しました。再度更新チェックをお願いします。\n何度試してもエラーが解消しない場合Twitterで@len_takayama宛に連絡かGitHubでIssuesまたはDiscussionsを開いてください。\n\nError Message:\n${err.message}`
   );
+});
+// とりあえず未確認のエラーをハンドリング
+log.catchErrors({
+  showDialog: true,
 });
 autoUpdater.on('checking-for-update', () => {
   log.info('Checking for update...');
