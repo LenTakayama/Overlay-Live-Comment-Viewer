@@ -24,6 +24,10 @@ autoUpdater.on('error', (err: Error) => {
     `自動更新実行中にエラーが発生しました。再度更新チェックをお願いします。\n何度試してもエラーが解消しない場合Twitterで@len_takayama宛に連絡かGitHubでIssuesまたはDiscussionsを開いてください。\n\nError Message:\n${err.message}`
   );
 });
+// とりあえず未確認のエラーをハンドリング
+log.catchErrors({
+  showDialog: true,
+});
 autoUpdater.on('checking-for-update', () => {
   log.info('Checking for update...');
 });
