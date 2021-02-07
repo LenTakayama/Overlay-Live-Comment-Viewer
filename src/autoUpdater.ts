@@ -1,8 +1,17 @@
 import { app, dialog } from 'electron';
 import { autoUpdater, UpdateInfo } from 'electron-updater';
 import log from 'electron-log';
+import { join } from 'path';
 
 log.transports.file.level = 'info';
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  if (variables.electronDefaultDir && variables.fileName) {
+    return join(variables.electronDefaultDir, variables.fileName);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return join(variables.libraryDefaultDir, variables.fileName!);
+  }
+};
 autoUpdater.logger = log;
 autoUpdater.allowPrerelease = false;
 
