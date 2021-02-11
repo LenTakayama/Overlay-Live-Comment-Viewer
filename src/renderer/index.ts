@@ -1,11 +1,15 @@
+import { DisplayList } from '~/types/common';
 import { Versions } from '~/types/front';
 
 class Index {
   private version!: Versions;
   private url: string | null = null;
   private css: string | null = null;
+  private displayList: DisplayList[] = [];
+  private isEditDislpayInput = false;
   constructor() {
     this.loadLocalStorage();
+    this.loadDisplayList();
     this.version = window.electronApis.getVersion();
     this.displayVersion();
     this.addSaveClickEvent();
@@ -48,6 +52,10 @@ class Index {
     } else {
       (<HTMLInputElement>document.getElementById('height')).value = '500';
     }
+  }
+
+  private async loadDisplayList() {
+    this.displayList = await window.electronApis.getDisplayList();
   }
 
   private addSaveClickEvent(): void {
@@ -111,6 +119,26 @@ class Index {
           await window.electronApis.sendDefaultCss();
         }
       });
+  }
+
+  private addEditDisplayButtonClickEvent(): void {
+    const selectValue = (<HTMLSelectElement>(
+      document.getElementById('selectDisplay')
+    )).value;
+    const button = <HTMLButtonElement>(
+      document.getElementById('editDisplayButton')
+    );
+    const input = <HTMLInputElement>document.getElementById('editDisplay');
+    button?.addEventListener('click', () => {
+      if (this.isEditDislpayInput) {
+        this.isEditDislpayInput = false;
+        button.value = '編集';
+        // TODO: mainへ送信
+      } else {
+        this.isEditDislpayInput = true;
+        button.value = '保存';
+      }
+    });
   }
 }
 
