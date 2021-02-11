@@ -35,6 +35,21 @@ const store = new Store({
       });
     },
   },
+  defaults: {
+    'comment-window-config': {
+      right: true,
+      bottom: false,
+      width: 400,
+      height: 500,
+    },
+    'insert-css': {
+      css: null,
+    },
+    'load-url': {
+      url: null,
+    },
+  },
+});
 
 log.transports.file.level = 'info';
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
@@ -92,20 +107,8 @@ const getExtraDirectory = () => {
 
 const createCommentWindow = () => {
   // 設定をロード
-  const loadURL = <LoadURL>store.get('load-url', {
-    url: null,
-  });
-  const insertCSS = <InsertCSS>store.get('insert-css', {
-    css: null,
-  });
-  const positionConfig = <PositionConfig>store.get('positionConfig', {
-    right: true,
-    bottom: false,
-  });
-  const windowSize = <WindowSize>store.get('window-size', {
-    width: 400,
-    height: 500,
-  });
+  const loadURL = <LoadURL>store.get('load-url');
+  const insertCSS = <InsertCSS>store.get('insert-css');
   const windowConfig = <WindowConfig>store.get('comment-window-config');
   const position = positionData(
     windowConfig.width,
