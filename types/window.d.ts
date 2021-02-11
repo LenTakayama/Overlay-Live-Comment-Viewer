@@ -1,3 +1,5 @@
+import { Display } from 'electron';
+import { DisplayList } from './common';
 import { Versions } from './front';
 
 declare global {
@@ -14,6 +16,7 @@ declare global {
       sendReset(): Promise<void>;
       sendDefaultCss(): Promise<void>;
       getVersion(): Versions;
+      getDisplayList(): Promise<DisplayList[]>;
     };
   }
 }

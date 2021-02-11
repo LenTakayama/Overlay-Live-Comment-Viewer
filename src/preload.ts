@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { version } from '~/package.json';
+import { DisplayList } from '~/types/common';
 
 contextBridge.exposeInMainWorld('electronApis', {
   sendLoadURL: async (url: string): Promise<void> =>
@@ -21,4 +22,6 @@ contextBridge.exposeInMainWorld('electronApis', {
       electron: process.versions.electron,
     };
   },
+  getDisplayList: async (): Promise<DisplayList[]> =>
+    await ipcRenderer.invoke('get-display-list'),
 });
