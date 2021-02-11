@@ -53,6 +53,13 @@ button {
     border: solid 1px rgb(98, 171, 245);
   }
 }
+.normal {
+  background: gray;
+  border: solid 1px rgb(21, 85, 148);
+  &:hover {
+    border: solid 1px rgb(98, 171, 245);
+  }
+}
 textarea,
 .url {
   width: 95%;

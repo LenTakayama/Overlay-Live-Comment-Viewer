@@ -5,16 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Setting - OLCV</title>
   </head>
+
   <body>
     <div>
-      <div class="left">
-        <label for="url"><h1>URL</h1></label>
+      <div>
+        <label for="url">
+          <h1>URL</h1>
+        </label>
         <input type="text" id="url" name="url" class="url" />
       </div>
-      <div class="right">
-        <label for="css"><h1>CSS</h1></label>
+      <div>
+        <label for="css">
+          <h1>CSS</h1>
+        </label>
         <textarea name="css" id="css" cols="30" rows="10"></textarea>
         <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
+      </div>
+    </div>
+    <div>
+      <div>
+        <label for="selectDisplay">
+          <h1>ディスプレイ</h1>
+        </label>
+        <select name="selectDisplay" id="selectDisplay"></select>
+        <button class="normal" id="editDisplayButton">編集</button>
+        <input type="text" id="editDisplay" hidden />
       </div>
     </div>
     <div class="row">
@@ -34,11 +49,15 @@
         <h1>コメント欄サイズ</h1>
         <div>
           <span><label for="width" class="col-1">幅</label></span>
-          <span><input type="number" name="width" id="width" class="col-2" /></span>
+          <span
+            ><input type="number" name="width" id="width" class="col-2"
+          /></span>
         </div>
         <div>
           <span><label for="height" class="col-1">高さ</label></span>
-          <span><input type="number" name="height" id="height" class="col-2" /></span>
+          <span
+            ><input type="number" name="height" id="height" class="col-2"
+          /></span>
         </div>
       </div>
     </div>
