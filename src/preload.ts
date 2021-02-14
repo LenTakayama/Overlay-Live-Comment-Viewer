@@ -21,4 +21,5 @@ contextBridge.exposeInMainWorld('electronApis', {
       electron: process.versions.electron,
     };
   },
+  displayComment: async () => await ipcRenderer.invoke('display-comment'),
 });

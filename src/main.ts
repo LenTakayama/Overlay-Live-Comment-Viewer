@@ -417,4 +417,10 @@ ipcMain.handle('default-css', async () => {
   store.delete('insert-css');
 });
 
+ipcMain.handle('display-comment', () => {
+  if (!commentWindow) {
+    createCommentWindow();
+  }
+});
+
 app.once('window-all-closed', () => null);

@@ -8,6 +8,7 @@ class Index {
     this.loadLocalStorage();
     this.version = window.electronApis.getVersion();
     this.displayVersion();
+    this.addDisplayClickEvent();
     this.addSaveClickEvent();
     this.addResetClickEvent();
     this.addDefaultCssClickEvent();
@@ -48,6 +49,15 @@ class Index {
     } else {
       (<HTMLInputElement>document.getElementById('height')).value = '500';
     }
+  }
+
+  private addDisplayClickEvent(): void {
+    document
+      .getElementById('display')
+      ?.addEventListener(
+        'click',
+        async () => await window.electronApis.displayComment()
+      );
   }
 
   private addSaveClickEvent(): void {

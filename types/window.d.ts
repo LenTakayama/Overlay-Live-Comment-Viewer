@@ -14,6 +14,7 @@ declare global {
       sendReset(): Promise<void>;
       sendDefaultCss(): Promise<void>;
       getVersion(): Versions;
+      displayComment(): Promise<void>;
     };
   }
 }
