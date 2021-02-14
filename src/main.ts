@@ -14,7 +14,13 @@ import {
 import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
-import { InsertCSS, LoadURL, WindowConfig, WindowSize } from '~/types/main';
+import {
+  InsertCSS,
+  LoadURL,
+  NotificationConfig,
+  WindowConfig,
+  WindowSize,
+} from '~/types/main';
 import { readFileSync } from 'fs';
 import log from 'electron-log';
 import '@/src/autoUpdater';
@@ -47,6 +53,10 @@ const store = new Store({
     },
     'load-url': {
       url: null,
+    },
+    notification: {
+      noSound: false,
+      onBoot: true,
     },
   },
 });
@@ -232,6 +242,7 @@ const createReadmeWindow = () => {
 };
 
 const createMenu = () => {
+  const config = store.get('notification');
   tray = new Tray(
     nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
   );
@@ -302,6 +313,13 @@ const createMenu = () => {
       tray?.popUpContextMenu(menu);
     }
   });
+  if (config.onBoot) {
+    tray.displayBalloon({
+      title: 'OLCV起動完了',
+      content: '通知領域のアイコンからコメントの表示と設定が出来ます',
+      noSound: config.noSound,
+    });
+  }
 };
 
 const setHeader = () => {
@@ -334,8 +352,16 @@ app.on('ready', () => {
   const loadVersion = <string>store.get('version', 'none version');
   if (loadVersion !== app.getVersion()) {
     store.set('version', app.getVersion());
+    // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
+    if (loadVersion === 'none version') {
+      createIndexWindow();
+    }
     createReadmeWindow();
   }
+});
+
+ipcMain.handle('ready-index-page', () => {
+  return store.get('notification');
 });
 
 ipcMain.handle('load-url', (_ipcEvent, message: string) => {
@@ -416,5 +442,20 @@ ipcMain.handle('default-css', async () => {
   }
   store.delete('insert-css');
 });
+
+ipcMain.handle('display-comment', () => {
+  if (!commentWindow) {
+    createCommentWindow();
+  }
+});
+
+ipcMain.handle(
+  'set-notification-config',
+  (_event, config: NotificationConfig) =>
+    store.set('notification', {
+      noSound: config.noSound,
+      onBoot: config.onBoot,
+    })
+);
 
 app.once('window-all-closed', () => null);
