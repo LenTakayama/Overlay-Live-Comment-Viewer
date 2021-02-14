@@ -1,7 +1,10 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { version } from '~/package.json';
+import { NotificationConfig } from '~/types/main';
 
 contextBridge.exposeInMainWorld('electronApis', {
+  init: async (): Promise<NotificationConfig> =>
+    await ipcRenderer.invoke('ready-index-page'),
   sendLoadURL: async (url: string): Promise<void> =>
     await ipcRenderer.invoke('load-url', url),
   sendInsertCSS: async (css: string): Promise<void> =>
@@ -22,4 +25,6 @@ contextBridge.exposeInMainWorld('electronApis', {
     };
   },
   displayComment: async () => await ipcRenderer.invoke('display-comment'),
+  sendNotificationConfig: async (config: NotificationConfig) =>
+    await ipcRenderer.invoke('set-notification-config', config),
 });

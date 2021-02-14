@@ -17,3 +17,8 @@ export type WindowConfig = {
   width: number;
   height: number;
 };
+
+export type NotificationConfig = {
+  noSound: boolean;
+  onBoot: boolean;
+};
