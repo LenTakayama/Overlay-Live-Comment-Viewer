@@ -352,6 +352,10 @@ app.on('ready', () => {
   const loadVersion = <string>store.get('version', 'none version');
   if (loadVersion !== app.getVersion()) {
     store.set('version', app.getVersion());
+    // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
+    if (loadVersion === 'none version') {
+      createIndexWindow();
+    }
     createReadmeWindow();
   }
 });
