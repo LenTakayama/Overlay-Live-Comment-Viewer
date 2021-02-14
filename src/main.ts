@@ -14,14 +14,43 @@ import {
 import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
-import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
+import { InsertCSS, LoadURL, WindowConfig, WindowSize } from '~/types/main';
 import { readFileSync } from 'fs';
 import log from 'electron-log';
 import '@/src/autoUpdater';
 
 const store = new Store({
   name: 'config',
+  migrations: {
+    '1.0.0': (migStore) => {
+      const oldData = <WindowSize>migStore.get('window-size', {
+        height: 500,
+        width: 400,
+      });
+      migStore.set('comment-window-config', {
+        width: oldData.width,
+        height: oldData.height,
+        right: true,
+        bottom: false,
+      });
+    },
+  },
+  defaults: {
+    'comment-window-config': {
+      right: true,
+      bottom: false,
+      width: 400,
+      height: 500,
+    },
+    'insert-css': {
+      css: null,
+    },
+    'load-url': {
+      url: null,
+    },
+  },
 });
+
 log.transports.file.level = 'info';
 log.transports.file.resolvePath = (variables: log.PathVariables) => {
   if (variables.electronDefaultDir && variables.fileName) {
@@ -78,31 +107,20 @@ const getExtraDirectory = () => {
 
 const createCommentWindow = () => {
   // 設定をロード
-  const loadURL = <LoadURL>store.get('load-url', {
-    url: null,
-  });
-  const insertCSS = <InsertCSS>store.get('insert-css', {
-    css: null,
-  });
-  const positionConfig = <PositionConfig>store.get('positionConfig', {
-    right: true,
-    bottom: false,
-  });
-  const windowSize = <WindowSize>store.get('window-size', {
-    width: 400,
-    height: 500,
-  });
+  const loadURL = <LoadURL>store.get('load-url');
+  const insertCSS = <InsertCSS>store.get('insert-css');
+  const windowConfig = <WindowConfig>store.get('comment-window-config');
   const position = positionData(
-    windowSize.width,
-    windowSize.height,
-    positionConfig.right,
-    positionConfig.bottom
+    windowConfig.width,
+    windowConfig.height,
+    windowConfig.right,
+    windowConfig.bottom
   );
   commentWindow = new BrowserWindow({
     x: position.x,
     y: position.y,
-    width: windowSize.width,
-    height: windowSize.height,
+    width: windowConfig.width,
+    height: windowConfig.height,
     transparent: true,
     frame: false,
     resizable: false,
@@ -132,8 +150,8 @@ const createCommentWindow = () => {
   commentView.setBounds({
     x: 0,
     y: 0,
-    width: windowSize.width,
-    height: windowSize.height,
+    width: windowConfig.width,
+    height: windowConfig.height,
   });
   commentView.setAutoResize({ width: true, height: true });
   commentView.webContents.loadURL(
@@ -351,7 +369,9 @@ ipcMain.handle(
     commentWindow?.setSize(msgWidth, msgHeight);
     const position = positionData(msgWidth, msgHeight, msgRight, msgBottom);
     commentWindow?.setPosition(position.x, position.y);
-    store.set('window-size', {
+    store.set('comment-window-config', {
+      right: msgRight,
+      bottom: msgBottom,
       width: msgWidth,
       height: msgHeight,
     });
