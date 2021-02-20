@@ -2,14 +2,13 @@ import {
   app,
   BrowserView,
   BrowserWindow,
-  session,
   ipcMain,
   screen,
   Menu,
   Tray,
   nativeImage,
-  shell,
   MenuItem,
+  shell,
 } from 'electron';
 import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
@@ -139,18 +138,22 @@ const createCommentWindow = () => {
     skipTaskbar: true,
     show: false,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
   commentView = new BrowserView({
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
 
@@ -179,6 +182,16 @@ const createCommentWindow = () => {
       commentWindow?.showInactive();
     }
   });
+  commentWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          // 'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
   process.env.NODE_ENV === 'development'
     ? commentView.webContents.openDevTools({ mode: 'detach' })
@@ -194,10 +207,12 @@ const createIndexWindow = () => {
     height: 700,
     width: 400,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
       preload: join(getResourceDirectory(), 'preload.js'),
     },
   });
@@ -211,6 +226,16 @@ const createIndexWindow = () => {
   });
   indexWindow.on('ready-to-show', () => indexWindow?.show());
   indexWindow.on('closed', () => (indexWindow = null));
+  indexWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
   process.env.NODE_ENV === 'development'
     ? indexWindow.webContents.openDevTools({ mode: 'detach' })
@@ -225,19 +250,27 @@ const createReadmeWindow = () => {
     height: 700,
     width: 500,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
   readmeWindow.loadURL(resolve(getResourceDirectory(), 'readme.html'));
   readmeWindow.on('ready-to-show', () => readmeWindow?.show());
-  readmeWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    shell.openExternal(url);
-  });
   readmeWindow.on('closed', () => (readmeWindow = null));
+  readmeWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
 };
 
@@ -322,15 +355,26 @@ const createMenu = () => {
   }
 };
 
-const setHeader = () => {
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-      },
-    });
+app.on('web-contents-created', (_event, contents) => {
+  contents.on('new-window', (event, url) => {
+    event.preventDefault();
+    if (
+      url ===
+        'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/blob/develop/README.md' ||
+      url === 'https://twitter.com/Len_Takayama' ||
+      url ===
+        'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues'
+    ) {
+      shell.openExternal(url);
+    }
   });
-};
+  contents.on('will-navigate', (event) => {
+    event.preventDefault();
+  });
+  contents.session.setPermissionRequestHandler(
+    (_webContents, _permission, callback) => callback(false)
+  );
+});
 
 // 起動スクリプト
 app.on('ready', () => {
@@ -347,7 +391,6 @@ app.on('ready', () => {
       }
     });
   }
-  setHeader();
   createMenu();
   const loadVersion = <string>store.get('version', 'none version');
   if (loadVersion !== app.getVersion()) {
