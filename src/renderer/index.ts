@@ -1,4 +1,7 @@
 import { Versions } from '~/types/front';
+window.eval = global.eval = () => {
+  throw new Error("Can't use eval().");
+};
 
 class Index {
   private version!: Versions;
