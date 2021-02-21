@@ -3,6 +3,8 @@ name: 'CD(deployment)'
 on:
   push:
     branches: [master]
+    tags:
+      - 'v*'
 
 jobs:
   release:
