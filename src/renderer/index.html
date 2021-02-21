@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'" />
     <title>Setting - OLCV</title>
   </head>
   <body>
@@ -29,21 +30,38 @@
           <input type="checkbox" name="bottom" id="bottom" />
         </div>
       </div>
-
       <div>
         <h1>コメント欄サイズ</h1>
         <div>
           <span><label for="width" class="col-1">幅</label></span>
-          <span><input type="number" name="width" id="width" class="col-2" /></span>
+          <span
+            ><input type="number" name="width" id="width" class="col-2"
+          /></span>
         </div>
         <div>
           <span><label for="height" class="col-1">高さ</label></span>
-          <span><input type="number" name="height" id="height" class="col-2" /></span>
+          <span
+            ><input type="number" name="height" id="height" class="col-2"
+          /></span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <h1>通知</h1>
+        <div>
+          <label for="onBoot">起動時通知する</label>
+          <input type="checkbox" name="onBoot" id="onBoot" />
+        </div>
+        <div>
+          <label for="noSound">音声通知しない</label>
+          <input type="checkbox" name="noSound" id="noSound" />
         </div>
       </div>
     </div>
     <hr />
     <div>
+      <button id="display" class="display">コメント表示</button>
       <button id="save" class="save">保存</button>
       <button id="reset" class="reset">設定を初期化する</button>
     </div>

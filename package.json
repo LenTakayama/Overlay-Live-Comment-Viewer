@@ -1,51 +1,25 @@
 {
   "name": "overlay-live-comment-viewer",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The abbreviation is OLCV.  This app overlays live comments on your desktop.",
   "main": "build/main.js",
   "scripts": {
     "develop": "run-s clean:output build:dev serve",
-    "production": "run-s clean:output clean:cache build:pro package:winx64",
+    "production": "run-s clean:output clean:cache build:pro package:winx86",
     "jest": "jest",
     "e2e": "echo todo",
     "lint": "eslint src",
+    "scan": "run-s electronegativity",
+    "serve": "electron .",
+    "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app",
     "clean:output": "rimraf build dist public",
     "clean:cache": "rimraf node_modules/.cache",
     "build:dev": "cross-env NODE_ENV=\"development\" webpack --progress",
     "build:pro": "cross-env NODE_ENV=\"production\" webpack --progress",
-    "package:winx64": "electron-builder --win --x64",
+    "package:winx64": "electron-builder --win --x64 --config ./electron-builder-x64.yml",
+    "package:winx86": "electron-builder --win --ia32",
     "package:macx64": "electron-builder --mac --x64",
-    "serve": "electron .",
-    "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app",
-    "postinstall": "electron-builder install-app-deps"
-  },
-  "build": {
-    "appId": "Overlay-Live-Comment-Viewer",
-    "productName": "Overlay Live Comment Viewer",
-    "directories": {
-      "buildResources": "public",
-      "output": "dist"
-    },
-    "files": [
-      "build",
-      "package.json",
-      "package-lock.json"
-    ],
-    "extraResources": [
-      "public"
-    ],
-    "mac": {
-      "target": [
-        "dmg"
-      ]
-    },
-    "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "electronegativity": "electronegativity -i ./build"
   },
   "repository": {
     "type": "git",
@@ -57,58 +31,63 @@
     "url": "https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues"
   },
   "homepage": "https://github.com/LenTakayama/Overlay-Live-Comment-Viewer#readme",
+  "engines": {
+    "node": "12.18.3",
+    "npm": "7.5.4"
+  },
   "devDependencies": {
-    "@babel/core": "^7.11.6",
-    "@babel/plugin-proposal-optional-chaining": "^7.11.0",
-    "@babel/preset-env": "^7.11.5",
-    "@types/jest": "^26.0.14",
-    "@types/webpack": "^4.41.22",
-    "@typescript-eslint/eslint-plugin": "^4.1.1",
-    "@typescript-eslint/parser": "^4.1.1",
+    "@babel/core": "^7.12.17",
+    "@babel/plugin-proposal-optional-chaining": "^7.12.17",
+    "@babel/preset-env": "^7.12.17",
+    "@doyensec/electronegativity": "^1.8.1",
+    "@types/jest": "^26.0.20",
+    "@types/webpack": "^4.41.26",
+    "@typescript-eslint/eslint-plugin": "^4.15.1",
+    "@typescript-eslint/parser": "^4.15.1",
     "asar": "^3.0.3",
     "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^8.2.2",
     "cache-loader": "^4.1.0",
-    "copy-webpack-plugin": "^6.1.1",
-    "cross-env": "^7.0.2",
-    "css-loader": "^4.3.0",
-    "electron": "^10.1.2",
-    "electron-builder": "^22.8.1",
-    "electron-store": "^6.0.0",
-    "eslint": "^7.9.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.4",
+    "copy-webpack-plugin": "^7.0.0",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.0.2",
+    "electron": "^11.3.0",
+    "electron-builder": "^22.9.1",
+    "electron-log": "^4.3.2",
+    "electron-store": "^7.0.2",
+    "electron-updater": "^4.3.5",
+    "eslint": "^7.20.0",
+    "eslint-config-prettier": "^7.2.0",
+    "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-security": "^1.4.0",
-    "fork-ts-checker-webpack-plugin": "^5.2.0",
-    "html-webpack-plugin": "^4.4.1",
-    "jest": "^26.5.0",
-    "mini-css-extract-plugin": "^0.11.2",
-    "node-sass": "^4.14.1",
+    "fork-ts-checker-webpack-plugin": "^6.1.0",
+    "html-webpack-plugin": "^5.2.0",
+    "jest": "^26.6.3",
+    "mini-css-extract-plugin": "^1.3.8",
+    "node-sass": "^5.0.0",
     "npm-run-all": "^4.1.5",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "postcss": "^8.0.5",
-    "postcss-loader": "^4.0.2",
+    "postcss": "^8.2.6",
+    "postcss-loader": "^5.0.0",
     "postcss-sorting": "^6.0.0",
-    "prettier": "^2.1.2",
-    "prettier-stylelint": "^0.4.2",
+    "prettier": "^2.2.1",
     "rimraf": "^3.0.2",
-    "sass-loader": "^10.0.2",
-    "spectron": "^12.0.0",
-    "stylelint": "^13.7.1",
+    "sass-loader": "^11.0.1",
+    "spectron": "^13.0.0",
+    "stylelint": "^13.11.0",
     "stylelint-config-prettier": "^8.0.2",
     "stylelint-config-standard": "^20.0.0",
     "stylelint-order": "^4.1.0",
     "stylelint-prettier": "^1.1.2",
-    "stylelint-scss": "^3.18.0",
-    "terser-webpack-plugin": "^4.2.1",
-    "thread-loader": "^3.0.0",
-    "ts-jest": "^26.4.1",
-    "ts-loader": "^8.0.3",
+    "stylelint-scss": "^3.19.0",
+    "terser-webpack-plugin": "^5.1.1",
+    "thread-loader": "^3.0.1",
+    "ts-jest": "^26.5.1",
+    "ts-loader": "^8.0.17",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
-    "typescript": "^4.0.3",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.12",
-    "webpack-fix-style-only-entries": "^0.5.1"
-  },
-  "dependencies": {}
+    "typescript": "^4.1.5",
+    "webpack": "^5.23.0",
+    "webpack-cli": "^4.5.0",
+    "webpack-fix-style-only-entries": "^0.6.1"
+  }
 }
