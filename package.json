@@ -31,6 +31,10 @@
     "url": "https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues"
   },
   "homepage": "https://github.com/LenTakayama/Overlay-Live-Comment-Viewer#readme",
+  "engines": {
+    "node": "12.18.3",
+    "npm": "7.5.4"
+  },
   "devDependencies": {
     "@babel/core": "^7.12.13",
     "@babel/plugin-proposal-optional-chaining": "^7.12.13",
