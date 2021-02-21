@@ -2,22 +2,76 @@ import {
   app,
   BrowserView,
   BrowserWindow,
-  session,
   ipcMain,
   screen,
   Menu,
   Tray,
   nativeImage,
-  shell,
   MenuItem,
+  shell,
 } from 'electron';
 import Store from 'electron-store';
+import { autoUpdater } from 'electron-updater';
 import { resolve, join } from 'path';
-import { InsertCSS, LoadURL, PositionConfig, WindowSize } from '~/types/main';
+import {
+  InsertCSS,
+  LoadURL,
+  NotificationConfig,
+  WindowConfig,
+  WindowSize,
+} from '~/types/main';
 import { readFileSync } from 'fs';
+import log from 'electron-log';
+import '@/src/autoUpdater';
 
 const store = new Store({
   name: 'config',
+  migrations: {
+    '1.0.0': (migStore) => {
+      const oldData = <WindowSize>migStore.get('window-size', {
+        height: 500,
+        width: 400,
+      });
+      migStore.set('comment-window-config', {
+        width: oldData.width,
+        height: oldData.height,
+        right: true,
+        bottom: false,
+      });
+    },
+  },
+  defaults: {
+    'comment-window-config': {
+      right: true,
+      bottom: false,
+      width: 400,
+      height: 500,
+    },
+    'insert-css': {
+      css: null,
+    },
+    'load-url': {
+      url: null,
+    },
+    notification: {
+      noSound: false,
+      onBoot: true,
+    },
+  },
+});
+
+log.transports.file.level = 'info';
+log.transports.file.resolvePath = (variables: log.PathVariables) => {
+  if (variables.electronDefaultDir && variables.fileName) {
+    return join(variables.electronDefaultDir, variables.fileName);
+  } else {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return join(variables.libraryDefaultDir, variables.fileName!);
+  }
+};
+// とりあえず未確認のエラーをハンドリング
+log.catchErrors({
+  showDialog: true,
 });
 
 let commentWindow: BrowserWindow | null = null;
@@ -62,31 +116,20 @@ const getExtraDirectory = () => {
 
 const createCommentWindow = () => {
   // 設定をロード
-  const loadURL = <LoadURL>store.get('load-url', {
-    url: null,
-  });
-  const insertCSS = <InsertCSS>store.get('insert-css', {
-    css: null,
-  });
-  const positionConfig = <PositionConfig>store.get('positionConfig', {
-    right: true,
-    bottom: false,
-  });
-  const windowSize = <WindowSize>store.get('window-size', {
-    width: 400,
-    height: 500,
-  });
+  const loadURL = <LoadURL>store.get('load-url');
+  const insertCSS = <InsertCSS>store.get('insert-css');
+  const windowConfig = <WindowConfig>store.get('comment-window-config');
   const position = positionData(
-    windowSize.width,
-    windowSize.height,
-    positionConfig.right,
-    positionConfig.bottom
+    windowConfig.width,
+    windowConfig.height,
+    windowConfig.right,
+    windowConfig.bottom
   );
   commentWindow = new BrowserWindow({
     x: position.x,
     y: position.y,
-    width: windowSize.width,
-    height: windowSize.height,
+    width: windowConfig.width,
+    height: windowConfig.height,
     transparent: true,
     frame: false,
     resizable: false,
@@ -95,18 +138,22 @@ const createCommentWindow = () => {
     skipTaskbar: true,
     show: false,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
   commentView = new BrowserView({
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
 
@@ -116,8 +163,8 @@ const createCommentWindow = () => {
   commentView.setBounds({
     x: 0,
     y: 0,
-    width: windowSize.width,
-    height: windowSize.height,
+    width: windowConfig.width,
+    height: windowConfig.height,
   });
   commentView.setAutoResize({ width: true, height: true });
   commentView.webContents.loadURL(
@@ -135,6 +182,16 @@ const createCommentWindow = () => {
       commentWindow?.showInactive();
     }
   });
+  commentWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          // 'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
   process.env.NODE_ENV === 'development'
     ? commentView.webContents.openDevTools({ mode: 'detach' })
@@ -147,13 +204,15 @@ const createIndexWindow = () => {
     frame: true,
     autoHideMenuBar: true,
     resizable: false,
-    height: 700,
+    height: 760,
     width: 400,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
       preload: join(getResourceDirectory(), 'preload.js'),
     },
   });
@@ -167,6 +226,16 @@ const createIndexWindow = () => {
   });
   indexWindow.on('ready-to-show', () => indexWindow?.show());
   indexWindow.on('closed', () => (indexWindow = null));
+  indexWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
   process.env.NODE_ENV === 'development'
     ? indexWindow.webContents.openDevTools({ mode: 'detach' })
@@ -181,23 +250,32 @@ const createReadmeWindow = () => {
     height: 700,
     width: 500,
     webPreferences: {
-      nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
       worldSafeExecuteJavaScript: true,
+      sandbox: true,
+      safeDialogs: true,
+      enableWebSQL: false,
     },
   });
   readmeWindow.loadURL(resolve(getResourceDirectory(), 'readme.html'));
   readmeWindow.on('ready-to-show', () => readmeWindow?.show());
-  readmeWindow.webContents.on('new-window', (event, url) => {
-    event.preventDefault();
-    shell.openExternal(url);
-  });
   readmeWindow.on('closed', () => (readmeWindow = null));
+  readmeWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': ["default-src 'self'"],
+        },
+      });
+    }
+  );
   app.once('window-all-closed', () => null);
 };
 
 const createMenu = () => {
+  const config = store.get('notification');
   tray = new Tray(
     nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
   );
@@ -234,8 +312,14 @@ const createMenu = () => {
         }
       },
     },
+    { type: 'separator' },
     {
       id: '4',
+      label: '更新確認',
+      click: () => autoUpdater.checkForUpdatesAndNotify(),
+    },
+    {
+      id: '5',
       label: 'ヘルプ',
       click: () => {
         if (readmeWindow) {
@@ -247,7 +331,7 @@ const createMenu = () => {
     },
     { type: 'separator' },
     {
-      id: '5',
+      id: '6',
       label: '終了',
       click: () => {
         tray = null;
@@ -262,17 +346,35 @@ const createMenu = () => {
       tray?.popUpContextMenu(menu);
     }
   });
+  if (config.onBoot) {
+    tray.displayBalloon({
+      title: 'OLCV起動完了',
+      content: '通知領域のアイコンからコメントの表示と設定が出来ます',
+      noSound: config.noSound,
+    });
+  }
 };
 
-const setHeader = () => {
-  session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
-    callback({
-      responseHeaders: {
-        ...details.responseHeaders,
-      },
-    });
+app.on('web-contents-created', (_event, contents) => {
+  contents.on('new-window', (event, url) => {
+    event.preventDefault();
+    if (
+      url ===
+        'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/blob/develop/README.md' ||
+      url === 'https://twitter.com/Len_Takayama' ||
+      url ===
+        'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues'
+    ) {
+      shell.openExternal(url);
+    }
   });
-};
+  contents.on('will-navigate', (event) => {
+    event.preventDefault();
+  });
+  contents.session.setPermissionRequestHandler(
+    (_webContents, _permission, callback) => callback(false)
+  );
+});
 
 // 起動スクリプト
 app.on('ready', () => {
@@ -289,13 +391,20 @@ app.on('ready', () => {
       }
     });
   }
-  setHeader();
   createMenu();
   const loadVersion = <string>store.get('version', 'none version');
   if (loadVersion !== app.getVersion()) {
     store.set('version', app.getVersion());
+    // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
+    if (loadVersion === 'none version') {
+      createIndexWindow();
+    }
     createReadmeWindow();
   }
+});
+
+ipcMain.handle('ready-index-page', () => {
+  return store.get('notification');
 });
 
 ipcMain.handle('load-url', (_ipcEvent, message: string) => {
@@ -329,7 +438,9 @@ ipcMain.handle(
     commentWindow?.setSize(msgWidth, msgHeight);
     const position = positionData(msgWidth, msgHeight, msgRight, msgBottom);
     commentWindow?.setPosition(position.x, position.y);
-    store.set('window-size', {
+    store.set('comment-window-config', {
+      right: msgRight,
+      bottom: msgBottom,
       width: msgWidth,
       height: msgHeight,
     });
@@ -374,5 +485,20 @@ ipcMain.handle('default-css', async () => {
   }
   store.delete('insert-css');
 });
+
+ipcMain.handle('display-comment', () => {
+  if (!commentWindow) {
+    createCommentWindow();
+  }
+});
+
+ipcMain.handle(
+  'set-notification-config',
+  (_event, config: NotificationConfig) =>
+    store.set('notification', {
+      noSound: config.noSound,
+      onBoot: config.onBoot,
+    })
+);
 
 app.once('window-all-closed', () => null);

@@ -1,35 +1,24 @@
-name: 'CI'
+name: 'CD(delivery)'
 
 on:
   pull_request:
     branches: [develop, master]
 
 jobs:
-  lint:
-    name: Lint
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: Review ESLint
-        uses: reviewdog/action-eslint@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          eslint_flags: 'src/'
-          fail_on_error: true
-
-  test:
-    name: Test
+  build:
+    name: Build
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [windows-latest]
         node: [12.18.3]
 
     steps:
+      - name: Set git to use LF
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
       - uses: actions/checkout@v2
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -47,12 +36,17 @@ jobs:
             ${{ runner.os }}-node-v${{ matrix.node }}-
             ${{ runner.os }}-node-
       - name: Install package
-        run: npm ci
-      - name: Run Jest
-        run: npm run jest -- --json --outputFile="jest.results.json"
-      - name: Show test result
-        uses: mattallty/jest-github-action@v1
+        run: |
+          npm ci
+          npm audit fix
+      - name: Build production
+        run: npm run production
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Cleanup artifacts
+        run: npx rimraf "dist/!(*.exe)"
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
         with:
-          test-command: 'npm run jest'
+          name: ${{ matrix.os }}
+          path: dist

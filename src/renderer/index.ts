@@ -1,4 +1,7 @@
 import { Versions } from '~/types/front';
+window.eval = global.eval = () => {
+  throw new Error("Can't use eval().");
+};
 
 class Index {
   private version!: Versions;
@@ -8,6 +11,8 @@ class Index {
     this.loadLocalStorage();
     this.version = window.electronApis.getVersion();
     this.displayVersion();
+    this.initMain();
+    this.addDisplayClickEvent();
     this.addSaveClickEvent();
     this.addResetClickEvent();
     this.addDefaultCssClickEvent();
@@ -50,6 +55,23 @@ class Index {
     }
   }
 
+  private async initMain() {
+    const notificationConfig = await window.electronApis.init();
+    (<HTMLInputElement>document.getElementById('noSound')).checked =
+      notificationConfig.noSound;
+    (<HTMLInputElement>document.getElementById('onBoot')).checked =
+      notificationConfig.onBoot;
+  }
+
+  private addDisplayClickEvent(): void {
+    document
+      .getElementById('display')
+      ?.addEventListener(
+        'click',
+        async () => await window.electronApis.displayComment()
+      );
+  }
+
   private addSaveClickEvent(): void {
     document.getElementById('save')?.addEventListener('click', async () => {
       const urlValue = (<HTMLInputElement>document.getElementById('url')).value;
@@ -62,6 +84,10 @@ class Index {
         .value;
       const heightValue = (<HTMLInputElement>document.getElementById('height'))
         .value;
+      const noSound = (<HTMLInputElement>document.getElementById('noSound'))
+        .checked;
+      const onBoot = (<HTMLInputElement>document.getElementById('onBoot'))
+        .checked;
       if (urlValue && urlValue !== this.url) {
         await window.electronApis.sendLoadURL(urlValue);
         this.url = urlValue;
@@ -77,6 +103,10 @@ class Index {
         isRight,
         isBottom
       );
+      await window.electronApis.sendNotificationConfig({
+        noSound: noSound,
+        onBoot: onBoot,
+      });
       localStorage.setItem('width', widthValue);
       localStorage.setItem('height', heightValue);
       localStorage.setItem('right', isRight.toString());
@@ -93,6 +123,8 @@ class Index {
         (<HTMLInputElement>document.getElementById('bottom')).checked = false;
         (<HTMLInputElement>document.getElementById('width')).value = '400';
         (<HTMLInputElement>document.getElementById('height')).value = '500';
+        (<HTMLInputElement>document.getElementById('noSound')).checked = false;
+        (<HTMLInputElement>document.getElementById('onBoot')).checked = true;
         localStorage.setItem('width', '400');
         localStorage.setItem('height', '500');
         localStorage.setItem('right', 'true');
