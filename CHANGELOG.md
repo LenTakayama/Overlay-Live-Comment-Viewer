@@ -17,7 +17,13 @@
 * マルチディスプレイ対応
 * 自動起動機能
 
-## [1.0.0] - 2021-02-
+## [1.0.1] - 2021-02-22
+
+### Fixed
+
+* リリースされなかった問題に対処
+
+## [1.0.0] - 2021-02-21
 
 ### Added
 
@@ -53,3 +59,7 @@
 * 初回起動時の案内表示機能
 * CSSリセット機能
 * 設定初期化機能
+
+[1.0.1]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v0.1.0...v1.0.0
+[0.1.0]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/releases/tag/v0.1.0

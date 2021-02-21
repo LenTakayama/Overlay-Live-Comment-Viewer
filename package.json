@@ -1,6 +1,6 @@
 {
   "name": "overlay-live-comment-viewer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The abbreviation is OLCV.  This app overlays live comments on your desktop.",
   "main": "build/main.js",
   "scripts": {
