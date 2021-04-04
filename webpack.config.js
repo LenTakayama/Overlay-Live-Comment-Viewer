@@ -115,6 +115,9 @@ const cssLoaderConfig = {
       loader: 'sass-loader',
       options: {
         sourceMap: isDev,
+        sassOptions: {
+          fiber: require('fibers'),
+        },
       },
     },
   ],
