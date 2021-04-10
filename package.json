@@ -9,7 +9,7 @@
     "jest": "jest",
     "e2e": "echo todo",
     "lint": "eslint src",
-    "scan": "run-s electronegativity",
+    "scan": "run-s build:pro electronegativity",
     "serve": "electron .",
     "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app",
     "clean:output": "rimraf build dist public",
