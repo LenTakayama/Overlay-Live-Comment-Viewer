@@ -30,16 +30,14 @@ class Index {
     const width = localStorage.getItem('width');
     const height = localStorage.getItem('height');
     if (right) {
-      (<HTMLInputElement>(
-        document.getElementById('right')
-      )).checked = /true/.test(right);
+      (<HTMLInputElement>document.getElementById('right')).checked =
+        /true/.test(right);
     } else {
       (<HTMLInputElement>document.getElementById('right')).checked = true;
     }
     if (bottom) {
-      (<HTMLInputElement>(
-        document.getElementById('bottom')
-      )).checked = /true/.test(bottom);
+      (<HTMLInputElement>document.getElementById('bottom')).checked =
+        /true/.test(bottom);
     } else {
       (<HTMLInputElement>document.getElementById('bottom')).checked = false;
     }
