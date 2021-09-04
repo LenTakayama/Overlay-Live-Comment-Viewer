@@ -139,8 +139,6 @@ const createCommentWindow = () => {
     show: false,
     webPreferences: {
       contextIsolation: true,
-      enableRemoteModule: false,
-      worldSafeExecuteJavaScript: true,
       sandbox: true,
       safeDialogs: true,
       enableWebSQL: false,
@@ -149,8 +147,6 @@ const createCommentWindow = () => {
   commentView = new BrowserView({
     webPreferences: {
       contextIsolation: true,
-      enableRemoteModule: false,
-      worldSafeExecuteJavaScript: true,
       sandbox: true,
       safeDialogs: true,
       enableWebSQL: false,
@@ -208,8 +204,6 @@ const createIndexWindow = () => {
     width: 400,
     webPreferences: {
       contextIsolation: true,
-      enableRemoteModule: false,
-      worldSafeExecuteJavaScript: true,
       sandbox: true,
       safeDialogs: true,
       enableWebSQL: false,
@@ -251,8 +245,6 @@ const createReadmeWindow = () => {
     width: 500,
     webPreferences: {
       contextIsolation: true,
-      enableRemoteModule: false,
-      worldSafeExecuteJavaScript: true,
       sandbox: true,
       safeDialogs: true,
       enableWebSQL: false,
