@@ -17,6 +17,16 @@
 * マルチディスプレイ対応
 * 自動起動機能
 
+## [1.0.3] - 2021-06-20
+
+### Changed
+
+* Electron13・webpack5へ更新。
+
+### Security
+
+* 依存パッケージの更新
+
 ## [1.0.2] - 2021-04-11
 
 ### Changed
@@ -75,6 +85,8 @@
 * CSSリセット機能
 * 設定初期化機能
 
+[1.0.3]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v0.1.0...v1.0.0
 [0.1.0]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/releases/tag/v0.1.0
