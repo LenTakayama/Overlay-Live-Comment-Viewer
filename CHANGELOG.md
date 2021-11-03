@@ -95,6 +95,7 @@
 * CSSリセット機能
 * 設定初期化機能
 
+[Unreleased]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/master...develop
 [1.0.4]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.2...v1.0.3
 [1.0.2]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.1...v1.0.2
