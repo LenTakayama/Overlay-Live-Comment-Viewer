@@ -126,7 +126,7 @@ const cssLoaderConfig = {
       options: {
         sourceMap: isDev,
         sassOptions: {
-          fiber: require('fibers'),
+          fiber: false,
         },
       },
     },
