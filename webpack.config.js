@@ -58,13 +58,18 @@ const base = {
     ],
     plugins: [new TsconfigPathsPlugin()],
   },
+  caches: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename]
+    }
+  }
 };
 
 const tsLoaderConfig = {
   test: /.tsx?$/,
   exclude: /node_modules/,
   use: [
-    { loader: 'cache-loader' },
     {
       loader: 'thread-loader',
       options: {
