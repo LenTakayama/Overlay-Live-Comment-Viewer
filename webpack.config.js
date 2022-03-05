@@ -1,10 +1,10 @@
 const { join, resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin').default;
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -58,13 +58,18 @@ const base = {
     ],
     plugins: [new TsconfigPathsPlugin()],
   },
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename]
+    }
+  }
 };
 
 const tsLoaderConfig = {
   test: /.tsx?$/,
   exclude: /node_modules/,
   use: [
-    { loader: 'cache-loader' },
     {
       loader: 'thread-loader',
       options: {
@@ -126,7 +131,7 @@ const cssLoaderConfig = {
       options: {
         sourceMap: isDev,
         sassOptions: {
-          fiber: require('fibers'),
+          fiber: false,
         },
       },
     },
@@ -242,7 +247,7 @@ const asset = {
         },
       ],
     }),
-    new FixStyleOnlyEntriesPlugin(),
+    new RemoveEmptyScriptsPlugin(),
   ],
 };
 
