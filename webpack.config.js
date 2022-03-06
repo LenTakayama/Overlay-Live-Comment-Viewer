@@ -95,9 +95,6 @@ const tsLoaderConfig = {
 };
 
 const forkTsCheckerConfig = {
-  eslint: {
-    files: './src/**/*.{ts,tsx,js,jsx}',
-  },
   typescript: {
     configFile: isDev ? 'tsconfig.json' : 'tsconfig.production.json',
     diagnosticOptions: {
