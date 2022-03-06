@@ -5,7 +5,7 @@
     "plugin:prettier/recommended"
   ],
   "plugins": ["security"],
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "env": { "browser": true, "node": true, "es6": true },
   "rules": {
     "no-console": "warn"
