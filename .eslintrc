@@ -1,9 +1,5 @@
 {
-  "extends": [
-    "eslint:recommended",
-    "plugin:security/recommended",
-    "plugin:prettier/recommended"
-  ],
+  "extends": ["eslint:recommended", "plugin:security/recommended", "prettier"],
   "plugins": ["security"],
   "parser": "@babel/eslint-parser",
   "env": { "browser": true, "node": true, "es6": true },
@@ -14,12 +10,13 @@
     {
       "files": ["*.ts", "*.tsx"],
       "extends": [
+        "eslint:recommended",
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:security/recommended",
-        "plugin:prettier/recommended"
+        "prettier"
       ],
-      "plugins": ["@typescript-eslint"],
+      "plugins": ["security", "@typescript-eslint"],
       "parser": "@typescript-eslint/parser",
       "parserOptions": {
         "sourceType": "module"
