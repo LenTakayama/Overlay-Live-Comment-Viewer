@@ -1,6 +1,6 @@
 const { join, resolve } = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin').default;
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
@@ -61,9 +61,9 @@ const base = {
   cache: {
     type: 'filesystem',
     buildDependencies: {
-      config: [__filename]
-    }
-  }
+      config: [__filename],
+    },
+  },
 };
 
 const tsLoaderConfig = {
@@ -95,9 +95,6 @@ const tsLoaderConfig = {
 };
 
 const forkTsCheckerConfig = {
-  eslint: {
-    files: './src/**/*.{ts,tsx,js,jsx}',
-  },
   typescript: {
     configFile: isDev ? 'tsconfig.json' : 'tsconfig.production.json',
     diagnosticOptions: {
