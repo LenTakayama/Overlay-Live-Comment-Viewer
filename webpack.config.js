@@ -61,9 +61,9 @@ const base = {
   cache: {
     type: 'filesystem',
     buildDependencies: {
-      config: [__filename]
-    }
-  }
+      config: [__filename],
+    },
+  },
 };
 
 const tsLoaderConfig = {
