@@ -189,9 +189,6 @@ const createCommentWindow = () => {
     }
   );
   app.once('window-all-closed', () => null);
-  process.env.NODE_ENV === 'development'
-    ? commentView.webContents.openDevTools({ mode: 'detach' })
-    : null;
 };
 
 const createIndexWindow = () => {
