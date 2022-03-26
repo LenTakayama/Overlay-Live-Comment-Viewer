@@ -22,3 +22,8 @@ export type NotificationConfig = {
   noSound: boolean;
   onBoot: boolean;
 };
+
+export type OneCommeConfig = {
+  isBoot: boolean;
+  path: string;
+};

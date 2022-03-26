@@ -58,3 +58,26 @@ textarea,
 .url {
   width: 95%;
 }
+.drop-area {
+  background-color: gray;
+}
+summary {
+  list-style: none;
+  position: relative;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::after {
+  content: '▽';
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  transition: transform 0.5s;
+  font-size: 30px;
+}
+summary:hover,
+details[open] summary {
+  background-color: #bc9e04;
+}

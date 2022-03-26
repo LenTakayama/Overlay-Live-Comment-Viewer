@@ -12,17 +12,48 @@ import {
 } from 'electron';
 import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
-import { resolve, join } from 'path';
+import { resolve, join, sep } from 'path';
 import {
   InsertCSS,
   LoadURL,
   NotificationConfig,
   WindowConfig,
   WindowSize,
+  OneCommeConfig,
 } from '~/types/main';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import log from 'electron-log';
 import '@/src/autoUpdater';
+
+const ONE_COMME_DIR_NAME = 'live-comment-viewer';
+const ONE_COMME_APP_NAME = 'わんコメ - OneComme.exe';
+
+const getOneCommePath = (): string => {
+  // OLCVはローカルインストールとグローバルインストール両方が存在する
+  const pathArray = app.getAppPath().split(sep);
+  // OLCVと同じ階層にあるかまず確認する
+  pathArray.push('..', ONE_COMME_DIR_NAME, ONE_COMME_APP_NAME);
+  const currentPath = join(...pathArray);
+  if (existsSync(currentPath)) {
+    return currentPath;
+  }
+  // なければAppDataから辿る
+  // FIXME: Windowsのみ対応
+  const userDataPathArray = app.getPath('appData').split(sep);
+  userDataPathArray.push(
+    '..',
+    'local',
+    'Programs',
+    ONE_COMME_DIR_NAME,
+    ONE_COMME_APP_NAME
+  );
+  const userDataPath = join(...userDataPathArray);
+  if (existsSync(userDataPath)) {
+    return userDataPath;
+  } else {
+    return '';
+  }
+};
 
 const store = new Store({
   name: 'config',
@@ -56,6 +87,10 @@ const store = new Store({
     notification: {
       noSound: false,
       onBoot: true,
+    },
+    oneCommeConfig: {
+      isBoot: false,
+      path: getOneCommePath(),
     },
   },
 });
@@ -189,9 +224,6 @@ const createCommentWindow = () => {
     }
   );
   app.once('window-all-closed', () => null);
-  process.env.NODE_ENV === 'development'
-    ? commentView.webContents.openDevTools({ mode: 'detach' })
-    : null;
 };
 
 const createIndexWindow = () => {
@@ -393,6 +425,10 @@ app.on('ready', () => {
     }
     createReadmeWindow();
   }
+  const oneCommeConfig = store.get('oneCommeConfig');
+  if (oneCommeConfig.isBoot && oneCommeConfig.path) {
+    shell.openPath(oneCommeConfig.path);
+  }
 });
 
 ipcMain.handle('ready-index-page', () => {
@@ -492,5 +528,19 @@ ipcMain.handle(
       onBoot: config.onBoot,
     })
 );
+
+ipcMain.handle('one-comme-config', (_event, config: OneCommeConfig) => {
+  store.set('oneCommeConfig', {
+    isBoot: config.isBoot,
+    path: config.path,
+  });
+});
+
+ipcMain.handle('one-comme-boot', () => {
+  const oneCommeConfig = store.get('oneCommeConfig');
+  if (oneCommeConfig.isBoot && oneCommeConfig.path) {
+    shell.openPath(oneCommeConfig.path);
+  }
+});
 
 app.once('window-all-closed', () => null);

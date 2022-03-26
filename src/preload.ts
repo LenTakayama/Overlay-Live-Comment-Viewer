@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { version } from '~/package.json';
-import { NotificationConfig } from '~/types/main';
+import { NotificationConfig, OneCommeConfig } from '~/types/main';
 
 contextBridge.exposeInMainWorld('electronApis', {
   init: async (): Promise<NotificationConfig> =>
@@ -27,4 +27,7 @@ contextBridge.exposeInMainWorld('electronApis', {
   displayComment: async () => await ipcRenderer.invoke('display-comment'),
   sendNotificationConfig: async (config: NotificationConfig) =>
     await ipcRenderer.invoke('set-notification-config', config),
+  sendOneCommeConfig: async (config: OneCommeConfig) =>
+    await ipcRenderer.invoke('one-comme-config', config),
+  sendOneCommeBoot: async () => await ipcRenderer.invoke('one-comme-boot'),
 });

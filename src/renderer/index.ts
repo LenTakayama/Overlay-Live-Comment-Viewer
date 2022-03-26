@@ -16,6 +16,8 @@ class Index {
     this.addSaveClickEvent();
     this.addResetClickEvent();
     this.addDefaultCssClickEvent();
+    this.addDropFileEvent();
+    this.addOneCommeBootButtonClick();
   }
 
   private displayVersion(): void {
@@ -94,17 +96,32 @@ class Index {
         await window.electronApis.sendInsertCSS(cssValue);
         this.css = cssValue;
       }
+      const isOneCommeBoot = (<HTMLInputElement>(
+        document.getElementById('one_comme_onboot')
+      )).checked;
+      const oneCommePath = (<HTMLInputElement>(
+        document.getElementById('one_comme_path')
+      )).value;
+      Promise.all([
+        window.electronApis.sendWindowConfig(
+          Number(widthValue),
+          Number(heightValue),
+          isRight,
+          isBottom
+        ),
+        window.electronApis.sendNotificationConfig({
+          noSound: noSound,
+          onBoot: onBoot,
+        }),
+        window.electronApis.sendOneCommeConfig({
+          isBoot: isOneCommeBoot,
+          path: oneCommePath,
+        }),
+      ])
+        .then()
+        // eslint-disable-next-line no-console
+        .catch((err) => console.error(err));
       // ロード時にセットするためにローカルストレージに保存
-      await window.electronApis.sendWindowConfig(
-        Number(widthValue),
-        Number(heightValue),
-        isRight,
-        isBottom
-      );
-      await window.electronApis.sendNotificationConfig({
-        noSound: noSound,
-        onBoot: onBoot,
-      });
       localStorage.setItem('width', widthValue);
       localStorage.setItem('height', heightValue);
       localStorage.setItem('right', isRight.toString());
@@ -141,6 +158,60 @@ class Index {
           await window.electronApis.sendDefaultCss();
         }
       });
+  }
+
+  private addDropFileEvent() {
+    const element = document.getElementById('drop-area');
+    if (element) {
+      element.addEventListener(
+        'dragover',
+        function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          this.style.background = '#e1e7f0';
+        },
+        false
+      );
+      element.addEventListener(
+        'dragleave',
+        function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          this.style.background = 'darkgrey';
+        },
+        false
+      );
+      const urlElement = document.getElementById('url');
+      if (urlElement) {
+        element.addEventListener(
+          'drop',
+          function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+            this.style.background = 'darkgrey';
+            const files = e.dataTransfer?.files;
+            if (!files) {
+              return;
+            }
+            if (files.length > 1)
+              return alert('アップロードできるファイルは1つだけです。');
+            (<HTMLInputElement>urlElement).value = files.item(0)?.path
+              ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                files.item(0)!.path
+              : '';
+          },
+          false
+        );
+      }
+    }
+  }
+
+  private addOneCommeBootButtonClick() {
+    const button = document.getElementById('one_comme_boot');
+    button?.addEventListener(
+      'click',
+      async () => await window.electronApis.sendOneCommeBoot()
+    );
   }
 }
 

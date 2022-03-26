@@ -11,6 +11,9 @@
       <div class="left">
         <label for="url"><h1>URL</h1></label>
         <input type="text" id="url" name="url" class="url" />
+        <div class="drop-area" id="drop-area">
+          <p>HTMLをここにドロップ</p>
+        </div>
       </div>
       <div class="right">
         <label for="css"><h1>CSS</h1></label>
@@ -59,6 +62,24 @@
         </div>
       </div>
     </div>
+    <details>
+      <summary>
+        <h1>アプリ連携設定</h1>
+      </summary>
+      <div>
+        <label for="one-comme-onboot"
+          >起動時にわんコメをあわせて立ち上げる</label
+        >
+        <input type="checkbox" name="one-comme-onboot" id="one_comme_onboot" />
+        <button class="display" name="one-comme-boot" id="one_comme_boot">
+          わんコメ起動
+        </button>
+      </div>
+      <div>
+        <label for="one-comme-path">わんコメのパス</label>
+        <input type="text" name="one-comme-path" id="one_comme_path" />
+      </div>
+    </details>
     <hr />
     <div>
       <button id="display" class="display">コメント表示</button>
