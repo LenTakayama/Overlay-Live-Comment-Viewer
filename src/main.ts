@@ -10,104 +10,19 @@ import {
   MenuItem,
   shell,
 } from 'electron';
-import Store from 'electron-store';
 import { autoUpdater } from 'electron-updater';
-import { resolve, join, sep } from 'path';
+import { resolve, join } from 'path';
 import {
   InsertCSS,
   LoadURL,
   NotificationConfig,
-  WindowConfig,
-  WindowSize,
   OneCommeConfig,
+  WindowConfig,
 } from '~/types/main';
-import { readFileSync, existsSync } from 'fs';
-import log from 'electron-log';
-import '@/src/autoUpdater';
-
-const ONE_COMME_DIR_NAME = 'live-comment-viewer';
-const ONE_COMME_APP_NAME = 'わんコメ - OneComme.exe';
-
-const getOneCommePath = (): string => {
-  // OLCVはローカルインストールとグローバルインストール両方が存在する
-  const pathArray = app.getAppPath().split(sep);
-  // OLCVと同じ階層にあるかまず確認する
-  pathArray.push('..', ONE_COMME_DIR_NAME, ONE_COMME_APP_NAME);
-  const currentPath = join(...pathArray);
-  if (existsSync(currentPath)) {
-    return currentPath;
-  }
-  // なければAppDataから辿る
-  // FIXME: Windowsのみ対応
-  const userDataPathArray = app.getPath('appData').split(sep);
-  userDataPathArray.push(
-    '..',
-    'local',
-    'Programs',
-    ONE_COMME_DIR_NAME,
-    ONE_COMME_APP_NAME
-  );
-  const userDataPath = join(...userDataPathArray);
-  if (existsSync(userDataPath)) {
-    return userDataPath;
-  } else {
-    return '';
-  }
-};
-
-const store = new Store({
-  name: 'config',
-  migrations: {
-    '1.0.0': (migStore) => {
-      const oldData = <WindowSize>migStore.get('window-size', {
-        height: 500,
-        width: 400,
-      });
-      migStore.set('comment-window-config', {
-        width: oldData.width,
-        height: oldData.height,
-        right: true,
-        bottom: false,
-      });
-    },
-  },
-  defaults: {
-    'comment-window-config': {
-      right: true,
-      bottom: false,
-      width: 400,
-      height: 500,
-    },
-    'insert-css': {
-      css: null,
-    },
-    'load-url': {
-      url: null,
-    },
-    notification: {
-      noSound: false,
-      onBoot: true,
-    },
-    oneCommeConfig: {
-      isBoot: false,
-      path: getOneCommePath(),
-    },
-  },
-});
-
-log.transports.file.level = 'info';
-log.transports.file.resolvePath = (variables: log.PathVariables) => {
-  if (variables.electronDefaultDir && variables.fileName) {
-    return join(variables.electronDefaultDir, variables.fileName);
-  } else {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return join(variables.libraryDefaultDir, variables.fileName!);
-  }
-};
-// とりあえず未確認のエラーをハンドリング
-log.catchErrors({
-  showDialog: true,
-});
+import { readFileSync } from 'fs';
+import { store } from './component/store';
+import './component/log';
+import '~/src/component/autoUpdater';
 
 let commentWindow: BrowserWindow | null = null;
 let commentView: BrowserView | null = null;
