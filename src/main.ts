@@ -18,7 +18,7 @@ import {
   NotificationConfig,
   OneCommeConfig,
   WindowConfig,
-} from '~/types/main';
+} from '~/@types/main';
 import { readFileSync } from 'fs';
 import { store } from './component/store';
 import './component/log';

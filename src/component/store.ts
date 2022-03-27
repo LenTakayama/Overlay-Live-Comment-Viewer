@@ -1,5 +1,5 @@
 import ElectronStore from 'electron-store';
-import { WindowSize } from '~/types/main';
+import { WindowSize } from '~/@types/main';
 import { getOneCommePath } from '../integrations/oneComme';
 
 export const store = new ElectronStore({

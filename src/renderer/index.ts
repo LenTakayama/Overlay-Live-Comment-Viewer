@@ -1,4 +1,4 @@
-import { Versions } from '~/types/front';
+import { Versions } from '~/@types/front';
 window.eval = global.eval = () => {
   throw new Error("Can't use eval().");
 };
