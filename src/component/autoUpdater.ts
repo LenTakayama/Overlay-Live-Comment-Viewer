@@ -7,7 +7,6 @@ autoUpdater.allowPrerelease = false;
 
 log.info('App starting...');
 autoUpdater.on('error', (err: Error) => {
-  log.error(`Error in auto updater. ${err.message}`);
   log.error(err);
   dialog.showErrorBox(
     '自動更新に失敗しました',
@@ -29,6 +28,6 @@ autoUpdater.on('download-progress', () => {
 autoUpdater.on('update-downloaded', (_info: UpdateInfo) => {
   log.info('Finish update downloaded');
 });
-app.on('ready', async () => {
+app.once('ready', async () => {
   autoUpdater.checkForUpdatesAndNotify();
 });
