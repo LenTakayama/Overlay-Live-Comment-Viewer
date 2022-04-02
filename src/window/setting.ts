@@ -5,11 +5,14 @@ import { getResourceDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
 
 export class SettingWindow implements ElectronWindow {
-  public window: BrowserWindow;
+  public window?: BrowserWindow;
   public menu: Menu;
 
   constructor(menu: Menu) {
     this.menu = menu;
+  }
+
+  public create() {
     this.window = new BrowserWindow({
       show: false,
       frame: true,
@@ -35,22 +38,19 @@ export class SettingWindow implements ElectronWindow {
       }
     );
     this.window.loadURL(resolve(getResourceDirectory(), 'index.html'));
-    this.addEventHandler();
-    process.env.NODE_ENV === 'development'
-      ? this.window.webContents.openDevTools({ mode: 'detach' })
-      : null;
-    return;
-  }
-
-  public close(): void {
-    closeWindow(this.window);
-  }
-
-  private addEventHandler(): void {
-    this.window.once('ready-to-show', () => this.window.show());
+    this.window.once('ready-to-show', () => this.window?.show());
     this.window.webContents.once('context-menu', () => {
       this.menu.popup();
     });
-    this.window.once('closed', () => this.close());
+    this.window.once('closed', () => {
+      this.close();
+    });
+    process.env.NODE_ENV === 'development'
+      ? this.window.webContents.openDevTools({ mode: 'detach' })
+      : null;
+  }
+  public close(): void {
+    closeWindow(this.window);
+    this.window = undefined;
   }
 }

@@ -11,9 +11,9 @@ import { SettingWindow } from './window/setting';
 import { ViewWindow } from './window/view';
 
 export class Application implements ApplicationInterface {
-  public settingWindow?: SettingWindow;
-  public viewWindow?: ViewWindow;
-  public readmeWindow?: ReadmeWindow;
+  public settingWindow: SettingWindow;
+  public viewWindow: ViewWindow;
+  public readmeWindow: ReadmeWindow;
   public tray?: Tray;
   public store: ElectronStore<StoreSchema>;
   public log: ElectronLog.ElectronLog;
@@ -21,6 +21,10 @@ export class Application implements ApplicationInterface {
   constructor(store: ElectronStore<StoreSchema>, log: ElectronLog.ElectronLog) {
     this.store = store;
     this.log = log;
+    const menu = createMenu();
+    this.settingWindow = new SettingWindow(menu);
+    this.viewWindow = new ViewWindow(this.store);
+    this.readmeWindow = new ReadmeWindow();
 
     this.addOnReadyEventHandler();
     this.addOnWebContentsCreatedEventHandler();
@@ -28,14 +32,13 @@ export class Application implements ApplicationInterface {
     addIpcMainHandles(this);
   }
   public createSettingWindow(): void {
-    const menu = createMenu();
-    this.settingWindow = new SettingWindow(menu);
+    this.settingWindow.create();
   }
   public createViewWindow(): void {
-    this.viewWindow = new ViewWindow(this.store);
+    this.viewWindow.create();
   }
   public createReadmeWindow(): void {
-    this.readmeWindow = new ReadmeWindow();
+    this.readmeWindow.create();
   }
 
   private addOnReadyEventHandler() {
@@ -48,7 +51,7 @@ export class Application implements ApplicationInterface {
       } else {
         app.on('second-instance', () => {
           // Someone tried to run a second instance, we should focus our window.
-          if (this.settingWindow) {
+          if (this.settingWindow.window) {
             if (this.settingWindow.window.isMinimized())
               this.settingWindow.window.restore();
             this.settingWindow.window.focus();

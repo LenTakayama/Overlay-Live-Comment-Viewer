@@ -16,7 +16,7 @@ export function createTray(application: Application): Tray {
       id: '1',
       label: 'コメント表示',
       click: () => {
-        if (application.viewWindow) {
+        if (application.viewWindow.window) {
           application.viewWindow.window.showInactive();
         } else {
           application.createViewWindow();
@@ -27,16 +27,14 @@ export function createTray(application: Application): Tray {
       id: '2',
       label: 'コメント非表示',
       click: () => {
-        if (application.viewWindow) {
-          application.viewWindow.close();
-        }
+        application.viewWindow.close();
       },
     },
     {
       id: '3',
       label: '設定',
       click: () => {
-        if (application.settingWindow) {
+        if (application.settingWindow.window) {
           application.settingWindow.window.show();
         } else {
           application.createSettingWindow();
@@ -53,7 +51,7 @@ export function createTray(application: Application): Tray {
       id: '5',
       label: 'ヘルプ',
       click: () => {
-        if (application.readmeWindow) {
+        if (application.readmeWindow.window) {
           application.readmeWindow.window.show();
         } else {
           application.createReadmeWindow();

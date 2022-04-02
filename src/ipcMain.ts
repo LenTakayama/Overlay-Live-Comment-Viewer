@@ -13,7 +13,7 @@ export function addIpcMainHandles(application: Application): void {
   });
 
   ipcMain.handle('load-url', (_ipcEvent, message: string) => {
-    application.viewWindow?.window.webContents.loadURL(message);
+    application.viewWindow.window?.webContents.loadURL(message);
     store.set('load-url', {
       url: message,
     });
@@ -21,13 +21,13 @@ export function addIpcMainHandles(application: Application): void {
   });
 
   ipcMain.handle('insert-css', async (_ipcEvent, message: string) => {
-    const insertCSSKey = application.viewWindow?.insertCSSKey;
+    const insertCSSKey = application.viewWindow.insertCSSKey;
     if (insertCSSKey) {
-      application.viewWindow?.window.webContents.removeInsertedCSS(
+      application.viewWindow.window?.webContents.removeInsertedCSS(
         await insertCSSKey
       );
     }
-    application.viewWindow?.window.webContents.insertCSS(message);
+    application.viewWindow.window?.webContents.insertCSS(message);
     store.set('insert-css', {
       css: message,
     });
@@ -43,8 +43,8 @@ export function addIpcMainHandles(application: Application): void {
       msgRight: boolean,
       msgBottom: boolean
     ) => {
-      application.viewWindow?.window.setSize(msgWidth, msgHeight);
-      application.viewWindow?.setWindowPosition(
+      application.viewWindow.window?.setSize(msgWidth, msgHeight);
+      application.viewWindow.setWindowPosition(
         msgWidth,
         msgHeight,
         msgRight,
@@ -61,12 +61,12 @@ export function addIpcMainHandles(application: Application): void {
   );
 
   ipcMain.handle('reset-config', async () => {
-    const viewWindowWebContents = application.viewWindow?.window.webContents;
+    const viewWindowWebContents = application.viewWindow.window?.webContents;
     if (viewWindowWebContents) {
       viewWindowWebContents.loadURL(
         join(getResourceDirectory(), 'notfound.html')
       );
-      const insertCSSKey = application.viewWindow?.insertCSSKey;
+      const insertCSSKey = application.viewWindow.insertCSSKey;
       if (insertCSSKey) {
         viewWindowWebContents.removeInsertedCSS(await insertCSSKey);
       }
@@ -76,17 +76,17 @@ export function addIpcMainHandles(application: Application): void {
         ).toString()
       );
     }
-    if (application.viewWindow?.window) {
-      application.viewWindow?.window.setSize(400, 500);
+    if (application.viewWindow.window) {
+      application.viewWindow.window.setSize(400, 500);
       application.viewWindow.setWindowPosition(400, 500, true, false);
     }
     store.clear();
   });
 
   ipcMain.handle('default-css', async () => {
-    const viewWindowWebContents = application.viewWindow?.window.webContents;
+    const viewWindowWebContents = application.viewWindow.window?.webContents;
     if (viewWindowWebContents) {
-      const insertCSSKey = application.viewWindow?.insertCSSKey;
+      const insertCSSKey = application.viewWindow.insertCSSKey;
       if (insertCSSKey) {
         viewWindowWebContents.removeInsertedCSS(await insertCSSKey);
       }
@@ -100,7 +100,7 @@ export function addIpcMainHandles(application: Application): void {
   });
 
   ipcMain.handle('display-comment', () => {
-    if (!application.viewWindow?.window) {
+    if (!application.viewWindow.window) {
       application.createViewWindow();
     }
   });

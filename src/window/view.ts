@@ -7,13 +7,15 @@ import { closeWindow } from './utility';
 import ElectronStore from 'electron-store';
 
 export class ViewWindow implements ElectronWindow {
-  public window: BrowserWindow;
-  public view: BrowserView;
+  public window?: BrowserWindow;
+  public view?: BrowserView;
   public store: ElectronStore<StoreSchema>;
   public insertCSSKey?: Promise<string>;
 
   constructor(store: ElectronStore<StoreSchema>) {
     this.store = store;
+  }
+  create(): void {
     const loadURL = this.store.get('load-url');
     const insertCSS = this.store.get('insert-css');
     const windowConfig = this.store.get('comment-window-config');
@@ -73,27 +75,22 @@ export class ViewWindow implements ElectronWindow {
       loadURL.url ? loadURL.url : join(getResourceDirectory(), 'notfound.html')
     );
     this.view.webContents.once('did-finish-load', () => {
-      this.insertCSSKey = this.view.webContents.insertCSS(
+      this.insertCSSKey = this.view?.webContents.insertCSS(
         insertCSS.css
           ? insertCSS.css
           : readFileSync(
               resolve(getExtraDirectory(), 'comment.bundle.css')
             ).toString()
       );
-      this.window.showInactive();
+      this.window?.showInactive();
     });
 
-    this.addEventHandler();
-    return;
+    this.window.once('ready-to-show', () => this.window?.show());
+    this.window.once('closed', () => this.close());
   }
-
   public close(): void {
     closeWindow(this.window);
-  }
-
-  private addEventHandler(): void {
-    this.window.once('ready-to-show', () => this.window.show());
-    this.window.once('closed', () => this.close());
+    this.window = undefined;
   }
 
   private calcWindowPosition(
@@ -124,6 +121,6 @@ export class ViewWindow implements ElectronWindow {
     bottom?: boolean
   ): void {
     const calcData = this.calcWindowPosition(width, height, right, bottom);
-    this.window.setPosition(calcData.x, calcData.y);
+    this.window?.setPosition(calcData.x, calcData.y);
   }
 }

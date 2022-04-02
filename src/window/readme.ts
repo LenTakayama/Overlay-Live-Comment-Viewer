@@ -5,9 +5,9 @@ import { getResourceDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
 
 export class ReadmeWindow implements ElectronWindow {
-  public window: BrowserWindow;
+  public window?: BrowserWindow;
 
-  constructor() {
+  create(): void {
     this.window = new BrowserWindow({
       show: false,
       frame: true,
@@ -31,16 +31,12 @@ export class ReadmeWindow implements ElectronWindow {
       }
     );
     this.window.loadURL(resolve(getResourceDirectory(), 'readme.html'));
-    this.addEventHandler();
-    return;
+    this.window.once('ready-to-show', () => this.window?.show());
+    this.window.once('closed', () => this.close());
   }
 
   public close(): void {
     closeWindow(this.window);
-  }
-
-  private addEventHandler(): void {
-    this.window.once('ready-to-show', () => this.window.show());
-    this.window.once('closed', () => this.close());
+    this.window = undefined;
   }
 }

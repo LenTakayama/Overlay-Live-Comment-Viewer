@@ -59,14 +59,15 @@ export type StoreSchema = {
 };
 
 export interface ElectronWindow {
-  window: BrowserWindow;
+  window?: BrowserWindow;
+  create(): void;
   close(): void;
 }
 
 export interface ApplicationInterface {
-  settingWindow?: SettingWindow;
-  viewWindow?: ViewWindow;
-  readmeWindow?: ReadmeWindow;
+  settingWindow: SettingWindow;
+  viewWindow: ViewWindow;
+  readmeWindow: ReadmeWindow;
   tray?: Tray;
   createSettingWindow(): void;
   createViewWindow(): void;
