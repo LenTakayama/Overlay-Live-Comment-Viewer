@@ -2,12 +2,11 @@ import { app, Menu, nativeImage, Tray } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { resolve } from 'path';
 import { Application } from './application';
-import { store } from './component/store';
 import { getExtraDirectory } from './utility';
 
 // readyイベント前に呼び出せない
 export function createTray(application: Application): Tray {
-  const config = store.get('notification');
+  const config = application.store.get('notification');
   const tray = new Tray(
     nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
   );
