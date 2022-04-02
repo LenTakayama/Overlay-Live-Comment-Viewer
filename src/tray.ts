@@ -6,7 +6,7 @@ import { store } from './component/store';
 import { getExtraDirectory } from './utility';
 
 // readyイベント前に呼び出せない
-export function createTray(main: Application): Tray {
+export function createTray(application: Application): Tray {
   const config = store.get('notification');
   const tray = new Tray(
     nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
@@ -16,10 +16,10 @@ export function createTray(main: Application): Tray {
       id: '1',
       label: 'コメント表示',
       click: () => {
-        if (main.viewWindow) {
-          main.viewWindow.window.showInactive();
+        if (application.viewWindow) {
+          application.viewWindow.window.showInactive();
         } else {
-          main.createViewWindow();
+          application.createViewWindow();
         }
       },
     },
@@ -27,8 +27,8 @@ export function createTray(main: Application): Tray {
       id: '2',
       label: 'コメント非表示',
       click: () => {
-        if (main.viewWindow) {
-          main.viewWindow.close();
+        if (application.viewWindow) {
+          application.viewWindow.close();
         }
       },
     },
@@ -36,10 +36,10 @@ export function createTray(main: Application): Tray {
       id: '3',
       label: '設定',
       click: () => {
-        if (main.settingWindow) {
-          main.settingWindow.window.show();
+        if (application.settingWindow) {
+          application.settingWindow.window.show();
         } else {
-          main.createSettingWindow();
+          application.createSettingWindow();
         }
       },
     },
@@ -53,10 +53,10 @@ export function createTray(main: Application): Tray {
       id: '5',
       label: 'ヘルプ',
       click: () => {
-        if (main.readmeWindow) {
-          main.readmeWindow.window.show();
+        if (application.readmeWindow) {
+          application.readmeWindow.window.show();
         } else {
-          main.createReadmeWindow();
+          application.createReadmeWindow();
         }
       },
     },
