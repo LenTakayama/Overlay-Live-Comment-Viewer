@@ -15,7 +15,7 @@ export class ViewWindow implements ElectronWindow {
   constructor(store: ElectronStore<StoreSchema>) {
     this.store = store;
   }
-  create(): void {
+  public create(): void {
     const loadURL = this.store.get('load-url');
     const insertCSS = this.store.get('insert-css');
     const windowConfig = this.store.get('comment-window-config');
@@ -93,6 +93,59 @@ export class ViewWindow implements ElectronWindow {
     this.window = undefined;
   }
 
+  public setWindowPositionAndSize(
+    width: number,
+    height: number,
+    right?: boolean,
+    bottom?: boolean
+  ): void {
+    if (this.window) {
+      const calcData = this.calcWindowPosition(width, height, right, bottom);
+      this.window?.setSize(width, height);
+      this.window?.setPosition(calcData.x, calcData.y);
+    }
+    this.store.set('comment-window-config', {
+      right: right,
+      bottom: bottom,
+      width: width,
+      height: height,
+    });
+  }
+  public resetWindowPositionAndSize(): void {
+    this.setWindowPositionAndSize(400, 500, true, false);
+  }
+  public setURL(url: string): void {
+    this.window?.webContents.loadURL(url);
+    this.store.set('load-url', {
+      url: url,
+    });
+  }
+  public clearURL(): void {
+    this.window?.loadURL(join(getResourceDirectory(), 'notfound.html'));
+  }
+  public async setCSS(css: string): Promise<void> {
+    await this.removeCSS();
+    this.window?.webContents.insertCSS(css);
+    this.store.set('insert-css', {
+      css: css,
+    });
+  }
+  public async removeCSS(): Promise<void> {
+    const insertCSSKey = this.insertCSSKey;
+    if (insertCSSKey) {
+      this.window?.webContents.removeInsertedCSS(await insertCSSKey);
+    }
+  }
+  public async resetCSS(): Promise<void> {
+    await this.removeCSS();
+    this.setCSS(
+      readFileSync(
+        resolve(getExtraDirectory(), 'comment.bundle.css')
+      ).toString()
+    );
+    this.store.delete('insert-css');
+  }
+
   private calcWindowPosition(
     width: number,
     height: number,
@@ -112,15 +165,5 @@ export class ViewWindow implements ElectronWindow {
       res.y = displaySize.height - height - 40;
     }
     return res;
-  }
-
-  public setWindowPosition(
-    width: number,
-    height: number,
-    right?: boolean,
-    bottom?: boolean
-  ): void {
-    const calcData = this.calcWindowPosition(width, height, right, bottom);
-    this.window?.setPosition(calcData.x, calcData.y);
   }
 }

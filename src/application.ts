@@ -1,7 +1,11 @@
 import { app, shell, Tray } from 'electron';
 import ElectronLog from 'electron-log';
 import ElectronStore from 'electron-store';
-import { ApplicationInterface, StoreSchema } from '~/@types/main';
+import {
+  ApplicationInterface,
+  NotificationConfig,
+  StoreSchema,
+} from '~/@types/main';
 import { onBootOpenOneComme } from './integrations/oneComme';
 import { addIpcMainHandles } from './ipcMain';
 import { createTray } from './tray';
@@ -39,6 +43,16 @@ export class Application implements ApplicationInterface {
   }
   public createReadmeWindow(): void {
     this.readmeWindow.create();
+  }
+
+  public resetConfig(): void {
+    this.viewWindow.clearURL();
+    this.viewWindow.resetCSS();
+    this.viewWindow.resetWindowPositionAndSize();
+    this.store.clear();
+  }
+  public saveNotificationConfig(config: NotificationConfig): void {
+    this.store.set('notification', config);
   }
 
   private addOnReadyEventHandler() {

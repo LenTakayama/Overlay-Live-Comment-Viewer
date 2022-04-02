@@ -1,7 +1,8 @@
 import { app, shell } from 'electron';
+import ElectronStore from 'electron-store';
 import { existsSync } from 'fs';
 import { sep, join } from 'path';
-import { OneCommeConfig } from '~/@types/main';
+import { OneCommeConfig, StoreSchema } from '~/@types/main';
 
 const ONE_COMME_DIR_NAME = 'live-comment-viewer';
 const ONE_COMME_APP_NAME = 'わんコメ - OneComme.exe';
@@ -32,13 +33,22 @@ export function getOneCommePath(): string {
     return '';
   }
 }
-
-export function openOneComme(path: string): void {
-  shell.openPath(path);
-}
-
 export function onBootOpenOneComme(config: OneCommeConfig): void {
   if (config.isBoot && config.path) {
-    openOneComme(config.path);
+    shellOpenPath(config.path);
   }
+}
+export function bootOneComme(store: ElectronStore<StoreSchema>) {
+  const config = store.get('oneCommeConfig');
+  shellOpenPath(config.path);
+}
+export function saveOneCommeConfig(
+  store: ElectronStore<StoreSchema>,
+  config: OneCommeConfig
+) {
+  store.set('oneCommeConfig', config);
+}
+
+function shellOpenPath(path: string): void {
+  shell.openPath(path);
 }
