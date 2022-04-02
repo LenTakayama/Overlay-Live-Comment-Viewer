@@ -67,7 +67,7 @@ export interface ApplicationInterface {
   settingWindow?: SettingWindow;
   viewWindow?: ViewWindow;
   readmeWindow?: ReadmeWindow;
-  tray: Tray;
+  tray?: Tray;
   createSettingWindow(): void;
   createViewWindow(): void;
   createReadmeWindow(): void;

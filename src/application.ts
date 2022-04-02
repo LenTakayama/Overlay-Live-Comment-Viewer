@@ -14,12 +14,11 @@ export class Application implements ApplicationInterface {
   public settingWindow?: SettingWindow;
   public viewWindow?: ViewWindow;
   public readmeWindow?: ReadmeWindow;
-  public tray: Tray;
+  public tray?: Tray;
   public store: ElectronStore<StoreSchema>;
   public log: ElectronLog.ElectronLog;
 
   constructor(store: ElectronStore<StoreSchema>, log: ElectronLog.ElectronLog) {
-    this.tray = createTray(this);
     this.store = store;
     this.log = log;
 
@@ -56,6 +55,8 @@ export class Application implements ApplicationInterface {
           }
         });
       }
+      // TrayはReadyの前に作成はできない
+      this.tray = createTray(this);
       const loadVersion = this.store.get('version');
       // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
       if (loadVersion !== app.getVersion()) {

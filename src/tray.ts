@@ -5,6 +5,7 @@ import { Application } from './application';
 import { store } from './component/store';
 import { getExtraDirectory } from './utility';
 
+// readyイベント前に呼び出せない
 export function createTray(main: Application): Tray {
   const config = store.get('notification');
   const tray = new Tray(
