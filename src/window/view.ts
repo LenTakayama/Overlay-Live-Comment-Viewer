@@ -115,17 +115,19 @@ export class ViewWindow implements ElectronWindow {
     this.setWindowPositionAndSize(400, 500, true, false);
   }
   public setURL(url: string): void {
-    this.window?.webContents.loadURL(url);
+    this.view?.webContents.loadURL(url);
     this.store.set('load-url', {
       url: url,
     });
   }
   public clearURL(): void {
-    this.window?.loadURL(join(getResourceDirectory(), 'notfound.html'));
+    this.view?.webContents.loadURL(
+      join(getResourceDirectory(), 'notfound.html')
+    );
   }
   public async setCSS(css: string): Promise<void> {
     await this.removeCSS();
-    this.window?.webContents.insertCSS(css);
+    this.view?.webContents.insertCSS(css);
     this.store.set('insert-css', {
       css: css,
     });
@@ -133,7 +135,7 @@ export class ViewWindow implements ElectronWindow {
   public async removeCSS(): Promise<void> {
     const insertCSSKey = this.insertCSSKey;
     if (insertCSSKey) {
-      this.window?.webContents.removeInsertedCSS(await insertCSSKey);
+      this.view?.webContents.removeInsertedCSS(await insertCSSKey);
     }
   }
   public async resetCSS(): Promise<void> {
