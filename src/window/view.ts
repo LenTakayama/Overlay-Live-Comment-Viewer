@@ -72,15 +72,11 @@ export class ViewWindow implements ElectronWindow {
     });
     this.view.setAutoResize({ width: true, height: true });
     this.view.webContents.loadURL(
-      loadURL.url ? loadURL.url : join(getResourceDirectory(), 'notfound.html')
+      loadURL.url ? loadURL.url : this.returnNotfoundHtml()
     );
     this.view.webContents.once('did-finish-load', () => {
       this.insertCSSKey = this.view?.webContents.insertCSS(
-        insertCSS.css
-          ? insertCSS.css
-          : readFileSync(
-              resolve(getExtraDirectory(), 'comment.bundle.css')
-            ).toString()
+        insertCSS.css ? insertCSS.css : this.returnDefaultCss()
       );
       this.window?.showInactive();
     });
@@ -121,9 +117,7 @@ export class ViewWindow implements ElectronWindow {
     });
   }
   public clearURL(): void {
-    this.view?.webContents.loadURL(
-      join(getResourceDirectory(), 'notfound.html')
-    );
+    this.view?.webContents.loadURL(this.returnNotfoundHtml());
   }
   public async setCSS(css: string): Promise<void> {
     await this.removeCSS();
@@ -140,11 +134,7 @@ export class ViewWindow implements ElectronWindow {
   }
   public async resetCSS(): Promise<void> {
     await this.removeCSS();
-    this.setCSS(
-      readFileSync(
-        resolve(getExtraDirectory(), 'comment.bundle.css')
-      ).toString()
-    );
+    this.setCSS(this.returnDefaultCss());
     this.store.delete('insert-css');
   }
 
@@ -167,5 +157,13 @@ export class ViewWindow implements ElectronWindow {
       res.y = displaySize.height - height - 40;
     }
     return res;
+  }
+  private returnDefaultCss(): string {
+    return readFileSync(
+      resolve(getExtraDirectory(), 'comment.bundle.css')
+    ).toString();
+  }
+  private returnNotfoundHtml(): string {
+    return join(getResourceDirectory(), 'notfound.html');
   }
 }
