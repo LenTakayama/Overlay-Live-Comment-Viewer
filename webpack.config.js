@@ -139,7 +139,7 @@ const main = {
   ...base,
   target: 'electron-main',
   entry: {
-    main: join(__dirname, 'src', 'main'),
+    main: join(__dirname, 'src', 'index'),
   },
   output: {
     filename: '[name].js',
@@ -155,7 +155,7 @@ const preload = {
   ...base,
   target: 'electron-preload',
   entry: {
-    preload: join(__dirname, 'src', 'preload'),
+    preload: join(__dirname, 'src', 'preload', 'preload'),
   },
   output: {
     filename: '[name].js',
