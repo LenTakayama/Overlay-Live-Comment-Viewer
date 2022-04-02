@@ -1,12 +1,12 @@
 import ElectronStore from 'electron-store';
-import { WindowSize } from '~/@types/main';
 import { getOneCommePath } from '../integrations/oneComme';
+import { StoreSchema } from '@/@types/main';
 
-export const store = new ElectronStore({
+export const store = new ElectronStore<StoreSchema>({
   name: 'config',
   migrations: {
     '1.0.0': (migStore) => {
-      const oldData = <WindowSize>migStore.get('window-size', {
+      const oldData = migStore.get('window-size', {
         height: 500,
         width: 400,
       });
@@ -19,6 +19,7 @@ export const store = new ElectronStore({
     },
   },
   defaults: {
+    version: 'none version',
     'comment-window-config': {
       right: true,
       bottom: false,
@@ -26,10 +27,10 @@ export const store = new ElectronStore({
       height: 500,
     },
     'insert-css': {
-      css: null,
+      css: undefined,
     },
     'load-url': {
-      url: null,
+      url: undefined,
     },
     notification: {
       noSound: false,
