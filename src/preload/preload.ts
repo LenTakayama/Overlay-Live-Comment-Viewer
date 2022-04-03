@@ -1,6 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { version } from '~/package.json';
-import { NotificationConfig, OneCommeConfig } from '~/types/main';
+import { NotificationConfig, OneCommeConfig } from '~/@types/main';
 
 contextBridge.exposeInMainWorld('electronApis', {
   init: async (): Promise<NotificationConfig> =>
