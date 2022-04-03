@@ -39,7 +39,7 @@ export class SettingWindow implements ElectronWindow {
     );
     this.window.loadURL(join(getResourceDirectory(), 'index.html'));
     this.window.once('ready-to-show', () => this.window?.show());
-    this.window.webContents.once('context-menu', () => {
+    this.window.webContents.on('context-menu', () => {
       this.menu.popup();
     });
     this.window.once('closed', () => {
