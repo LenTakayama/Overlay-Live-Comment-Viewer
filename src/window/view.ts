@@ -1,5 +1,5 @@
 import { BrowserView, BrowserWindow, screen } from 'electron';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { readFileSync } from 'fs';
 import { ElectronWindow, StoreSchema } from '~/@types/main';
 import { getResourceDirectory, getExtraDirectory } from '~/src/utility';
@@ -160,7 +160,7 @@ export class ViewWindow implements ElectronWindow {
   }
   private returnDefaultCss(): string {
     return readFileSync(
-      resolve(getExtraDirectory(), 'comment.bundle.css')
+      join(getExtraDirectory(), 'comment.bundle.css')
     ).toString();
   }
   private returnNotfoundHtml(): string {

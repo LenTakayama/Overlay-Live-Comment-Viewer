@@ -1,6 +1,6 @@
 import { app, Menu, nativeImage, Tray } from 'electron';
 import { autoUpdater } from 'electron-updater';
-import { resolve } from 'path';
+import { join } from 'path';
 import { Application } from './application';
 import { getExtraDirectory } from './utility';
 
@@ -8,7 +8,7 @@ import { getExtraDirectory } from './utility';
 export function createTray(application: Application): Tray {
   const config = application.store.get('notification');
   const tray = new Tray(
-    nativeImage.createFromPath(resolve(getExtraDirectory(), 'win_icon.png'))
+    nativeImage.createFromPath(join(getExtraDirectory(), 'win_icon.png'))
   );
   const menu = Menu.buildFromTemplate([
     {

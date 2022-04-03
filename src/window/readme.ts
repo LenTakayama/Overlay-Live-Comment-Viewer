@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import { resolve } from 'path';
+import { join } from 'path';
 import { ElectronWindow } from '~/@types/main';
 import { getResourceDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
@@ -30,7 +30,7 @@ export class ReadmeWindow implements ElectronWindow {
         });
       }
     );
-    this.window.loadURL(resolve(getResourceDirectory(), 'readme.html'));
+    this.window.loadURL(join(getResourceDirectory(), 'readme.html'));
     this.window.once('ready-to-show', () => this.window?.show());
     this.window.once('closed', () => this.close());
   }

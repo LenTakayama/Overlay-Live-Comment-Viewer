@@ -1,5 +1,5 @@
 import { BrowserWindow, Menu } from 'electron';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { ElectronWindow } from '~/@types/main';
 import { getResourceDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
@@ -37,7 +37,7 @@ export class SettingWindow implements ElectronWindow {
         });
       }
     );
-    this.window.loadURL(resolve(getResourceDirectory(), 'index.html'));
+    this.window.loadURL(join(getResourceDirectory(), 'index.html'));
     this.window.once('ready-to-show', () => this.window?.show());
     this.window.webContents.once('context-menu', () => {
       this.menu.popup();
