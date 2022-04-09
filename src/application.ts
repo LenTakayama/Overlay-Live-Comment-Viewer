@@ -33,6 +33,10 @@ export class Application implements ApplicationInterface {
     this.addOnReadyEventHandler();
     this.addOnWebContentsCreatedEventHandler();
     app.on('window-all-closed', () => null);
+    app.once('will-quit', (_e) => {
+      this.tray?.destroy();
+      this.tray = undefined;
+    });
     addIpcMainHandles(this);
   }
   public createSettingWindow(): void {
