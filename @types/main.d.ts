@@ -44,26 +44,11 @@ export type Configs = {
 
 export type StoreSchema = {
   version: string;
-  'comment-window-config': {
-    right: boolean;
-    bottom: boolean;
-    width: number;
-    height: number;
-  };
-  'insert-css': {
-    css?: string;
-  };
-  'load-url': {
-    url?: string;
-  };
-  notification: {
-    noSound: boolean;
-    onBoot: boolean;
-  };
-  oneCommeConfig: {
-    isBoot: boolean;
-    path: string;
-  };
+  'comment-window-config': WindowConfig;
+  'insert-css': InsertCSS;
+  'load-url': LoadURL;
+  notification: NotificationConfig;
+  oneCommeConfig: OneCommeConfig;
 };
 
 export interface ElectronWindow {
