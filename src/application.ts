@@ -3,6 +3,7 @@ import ElectronLog from 'electron-log';
 import ElectronStore from 'electron-store';
 import {
   ApplicationInterface,
+  Configs,
   NotificationConfig,
   StoreSchema,
 } from '~/@types/main';
@@ -49,6 +50,21 @@ export class Application implements ApplicationInterface {
     this.readmeWindow.create();
   }
 
+  public getConfigs(): Configs {
+    // TODO: パフォーマンスの問題が出てきたらプロパティに持つようにする
+    const url = this.store.get('load-url');
+    const css = this.store.get('insert-css');
+    const windowConfig = this.store.get('comment-window-config');
+    const notificationConfig = this.store.get('notification');
+    const oneCommeConfig = this.store.get('oneCommeConfig');
+    return {
+      loadUrl: url,
+      insertCss: css,
+      windowConfig: windowConfig,
+      notificationConfig: notificationConfig,
+      oneCommeConfig: oneCommeConfig,
+    };
+  }
   public resetConfig(): void {
     this.viewWindow.clearURL();
     this.viewWindow.resetCSS();

@@ -1,21 +1,16 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import { version } from '~/package.json';
-import { NotificationConfig, OneCommeConfig } from '~/@types/main';
+import { IPC_CHANNELS } from '~/src/ipcChannels';
+import { Configs } from '~/@types/main';
 
 contextBridge.exposeInMainWorld('electronApis', {
-  init: async (): Promise<NotificationConfig> =>
-    await ipcRenderer.invoke('ready-index-page'),
-  sendLoadURL: async (url: string): Promise<void> =>
-    await ipcRenderer.invoke('load-url', url),
-  sendInsertCSS: async (css: string): Promise<void> =>
-    await ipcRenderer.invoke('insert-css', css),
-  sendWindowConfig: async (
-    width: number,
-    height: number,
-    right: boolean,
-    bottom: boolean
-  ) => await ipcRenderer.invoke('window-config', width, height, right, bottom),
-  sendReset: async () => await ipcRenderer.invoke('reset-config'),
+  getConfigs: async (): Promise<Configs> =>
+    await ipcRenderer.invoke(IPC_CHANNELS.GET_CONFIGS_CHANNEL),
+  pushConfigs: async (config: Configs) => {
+    await ipcRenderer.invoke(IPC_CHANNELS.PUSH_CONFIGS_CHANNEL, config);
+  },
+  sendResetConfigsRequest: async () =>
+    await (<Promise<Configs>>ipcRenderer.invoke('reset-config')),
   sendDefaultCss: async () => await ipcRenderer.invoke('default-css'),
   getVersion: () => {
     return {
@@ -25,9 +20,7 @@ contextBridge.exposeInMainWorld('electronApis', {
     };
   },
   displayComment: async () => await ipcRenderer.invoke('display-comment'),
-  sendNotificationConfig: async (config: NotificationConfig) =>
-    await ipcRenderer.invoke('set-notification-config', config),
-  sendOneCommeConfig: async (config: OneCommeConfig) =>
-    await ipcRenderer.invoke('one-comme-config', config),
-  sendOneCommeBoot: async () => await ipcRenderer.invoke('one-comme-boot'),
+  sendOneCommeBootRequest: async () => {
+    await ipcRenderer.invoke(IPC_CHANNELS.ONE_COMME_BOOT_REQUEST_CHANNEL);
+  },
 });

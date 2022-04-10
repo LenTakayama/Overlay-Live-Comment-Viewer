@@ -5,11 +5,11 @@ import { SettingWindow } from '~/src/window/setting';
 import { ViewWindow } from '~/src/window/view';
 
 export type InsertCSS = {
-  css: string | null;
+  css?: string;
 };
 
 export type LoadURL = {
-  url: string | null;
+  url?: string;
 };
 
 export type WindowSize = {
@@ -32,6 +32,14 @@ export type NotificationConfig = {
 export type OneCommeConfig = {
   isBoot: boolean;
   path: string;
+};
+
+export type Configs = {
+  loadUrl: LoadURL;
+  insertCss: InsertCSS;
+  windowConfig: WindowConfig;
+  notificationConfig: NotificationConfig;
+  oneCommeConfig: OneCommeConfig;
 };
 
 export type StoreSchema = {

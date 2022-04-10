@@ -1,25 +1,16 @@
 import { Versions } from './front';
-import { NotificationConfig, OneCommeConfig } from './main';
+import { Configs, NotificationConfig, OneCommeConfig } from './main';
 
 declare global {
   interface Window {
     electronApis: {
-      init(): Promise<NotificationConfig>;
-      sendLoadURL(url: string): Promise<void>;
-      sendInsertCSS(css: string): Promise<void>;
-      sendWindowConfig(
-        width: number,
-        height: number,
-        right: boolean,
-        bottom: boolean
-      ): Promise<void>;
-      sendReset(): Promise<void>;
+      getConfigs(): Promise<Configs>;
+      pushConfigs(config: Configs): Promise<void>;
+      sendResetConfigRequest(): Promise<Configs>;
       sendDefaultCss(): Promise<void>;
       getVersion(): Versions;
       displayComment(): Promise<void>;
-      sendNotificationConfig(config: NotificationConfig): Promise<void>;
-      sendOneCommeConfig(config: OneCommeConfig): Promise<void>;
-      sendOneCommeBoot(): Promise<void>;
+      sendOneCommeBootRequest(): Promise<void>;
     };
   }
 }
