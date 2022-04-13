@@ -6,7 +6,7 @@ declare global {
     electronApis: {
       getConfigs(): Promise<Configs>;
       pushConfigs(config: Configs): Promise<void>;
-      sendResetConfigRequest(): Promise<Configs>;
+      sendResetConfigsRequest(): Promise<Configs>;
       sendDefaultCss(): Promise<void>;
       getVersion(): Versions;
       displayComment(): Promise<void>;
