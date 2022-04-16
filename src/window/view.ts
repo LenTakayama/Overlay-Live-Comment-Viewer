@@ -10,7 +10,7 @@ export class ViewWindow implements ElectronWindow {
   public window?: BrowserWindow;
   public view?: BrowserView;
   public store: ElectronStore<StoreSchema>;
-  public insertCSSKey?: Promise<string>;
+  public insertCSSKey?: string;
 
   constructor(store: ElectronStore<StoreSchema>) {
     this.store = store;
@@ -74,8 +74,8 @@ export class ViewWindow implements ElectronWindow {
     this.view.webContents.loadURL(
       loadURL.url ? loadURL.url : this.returnNotfoundHtml()
     );
-    this.view.webContents.once('did-finish-load', () => {
-      this.insertCSSKey = this.view?.webContents.insertCSS(
+    this.view.webContents.once('did-finish-load', async () => {
+      this.insertCSSKey = await this.view?.webContents.insertCSS(
         insertCSS.css ? insertCSS.css : this.returnDefaultCss()
       );
       this.window?.showInactive();
@@ -119,9 +119,9 @@ export class ViewWindow implements ElectronWindow {
   public clearURL(): void {
     this.view?.webContents.loadURL(this.returnNotfoundHtml());
   }
-  private setCss(css: string): void {
+  private async setCss(css: string): Promise<void> {
     this.removeCss();
-    this.view?.webContents.insertCSS(css);
+    this.insertCSSKey = await this.view?.webContents.insertCSS(css);
     this.store.set('insert-css', {
       css: css,
     });
@@ -129,10 +129,11 @@ export class ViewWindow implements ElectronWindow {
   private async removeCss(): Promise<void> {
     const insertCSSKey = this.insertCSSKey;
     if (insertCSSKey) {
-      this.view?.webContents.removeInsertedCSS(await insertCSSKey);
+      this.view?.webContents.removeInsertedCSS(insertCSSKey);
       this.insertCSSKey = undefined;
     }
   }
+  // ユーザーCSSを削除しYouTubeデフォルトCSSにする
   public resetCss(): void {
     this.setCss(this.returnDefaultCss());
     this.store.delete('insert-css');
