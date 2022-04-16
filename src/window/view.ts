@@ -129,7 +129,7 @@ export class ViewWindow implements ElectronWindow {
   private async removeCss(): Promise<void> {
     const insertCSSKey = this.insertCSSKey;
     if (insertCSSKey) {
-      this.view?.webContents.removeInsertedCSS(insertCSSKey);
+      await this.view?.webContents.removeInsertedCSS(insertCSSKey);
       this.insertCSSKey = undefined;
     }
   }
