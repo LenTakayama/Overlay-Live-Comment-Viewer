@@ -23,6 +23,11 @@ export function addIpcMainHandles(application: Application): void {
       application.createViewWindow();
     }
   });
+  ipcMain.handle(IPC_CHANNELS.REQUEST_HIDE_COMMENT_CHANNEL, () => {
+    if (application.viewWindow.window) {
+      application.viewWindow.close();
+    }
+  });
 
   ipcMain.handle(IPC_CHANNELS.ONE_COMME_BOOT_REQUEST_CHANNEL, () => {
     bootOneComme(application.store);

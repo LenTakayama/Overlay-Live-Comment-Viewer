@@ -10,6 +10,7 @@ declare global {
       sendDefaultCss(): Promise<void>;
       getVersion(): Versions;
       displayComment(): Promise<void>;
+      hideComment(): Promise<void>;
       sendOneCommeBootRequest(): Promise<void>;
       sendCssMode(cssMode: string, css: string): Promise<void>;
     };

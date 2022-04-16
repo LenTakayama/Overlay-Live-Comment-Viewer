@@ -20,6 +20,7 @@ class Index {
 
     // 各種要素に対してイベントを設定
     this.addDisplayClickEvent();
+    this.addHideCommentButtonClickEvent();
     this.addSaveClickEvent();
     this.addResetClickEvent();
     this.addDefaultCssClickEvent();
@@ -87,6 +88,15 @@ class Index {
         'click',
         async () => await window.electronApis.displayComment()
       );
+  }
+  // コメント非表示ボタン
+  private addHideCommentButtonClickEvent(): void {
+    this.getInputElementById('hide_comment').addEventListener(
+      'click',
+      async () => {
+        await window.electronApis.hideComment();
+      }
+    );
   }
 
   private addSaveClickEvent(): void {

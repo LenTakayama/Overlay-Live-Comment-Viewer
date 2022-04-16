@@ -22,6 +22,8 @@ contextBridge.exposeInMainWorld('electronApis', {
     };
   },
   displayComment: async () => await ipcRenderer.invoke('display-comment'),
+  hideComment: async () =>
+    await ipcRenderer.invoke(IPC_CHANNELS.REQUEST_HIDE_COMMENT_CHANNEL),
   sendOneCommeBootRequest: async () => {
     await ipcRenderer.invoke(IPC_CHANNELS.ONE_COMME_BOOT_REQUEST_CHANNEL);
   },
