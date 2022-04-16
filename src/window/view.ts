@@ -71,13 +71,18 @@ export class ViewWindow implements ElectronWindow {
       height: windowConfig.height,
     });
     this.view.setAutoResize({ width: true, height: true });
-    this.view.webContents.loadURL(
-      loadURL.url ? loadURL.url : this.returnNotfoundHtml()
-    );
+    this.view.webContents
+      .loadURL(loadURL.url ? loadURL.url : this.returnNotfoundHtml())
+      .then(async () => {
+        let css = '';
+        if (insertCSS.cssMode == 'youtubeDefault') {
+          css = this.returnDefaultCss();
+        } else {
+          css = insertCSS.css ? insertCSS.css : '';
+        }
+        this.insertCSSKey = await this.view?.webContents.insertCSS(css);
+      });
     this.view.webContents.once('did-finish-load', async () => {
-      this.insertCSSKey = await this.view?.webContents.insertCSS(
-        insertCSS.css ? insertCSS.css : this.returnDefaultCss()
-      );
       this.window?.showInactive();
     });
 
