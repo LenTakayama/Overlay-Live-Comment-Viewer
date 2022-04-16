@@ -1,7 +1,7 @@
 import { BrowserView, BrowserWindow, screen } from 'electron';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { ElectronWindow, StoreSchema } from '~/@types/main';
+import { ElectronWindow, InsertCSS, StoreSchema } from '~/@types/main';
 import { getResourceDirectory, getExtraDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
 import ElectronStore from 'electron-store';
@@ -17,7 +17,7 @@ export class ViewWindow implements ElectronWindow {
   }
   public create(): void {
     const loadURL = this.store.get('load-url');
-    const insertCSS = this.store.get('insert-css');
+    const insertCss = this.store.get('insert-css');
     const windowConfig = this.store.get('comment-window-config');
     const position = this.calcWindowPosition(
       windowConfig.width,
@@ -74,13 +74,7 @@ export class ViewWindow implements ElectronWindow {
     this.view.webContents
       .loadURL(loadURL.url ? loadURL.url : this.returnNotfoundHtml())
       .then(async () => {
-        let css = '';
-        if (insertCSS.cssMode == 'youtubeDefault') {
-          css = this.returnDefaultCss();
-        } else {
-          css = insertCSS.css ? insertCSS.css : '';
-        }
-        this.insertCSSKey = await this.view?.webContents.insertCSS(css);
+        this.setCss(insertCss);
       });
     this.view.webContents.once('did-finish-load', async () => {
       this.window?.showInactive();
@@ -115,8 +109,12 @@ export class ViewWindow implements ElectronWindow {
   public resetWindowPositionAndSize(): void {
     this.setWindowPositionAndSize(400, 500, true, false);
   }
-  public setURL(url: string): void {
-    this.view?.webContents.loadURL(url);
+  public setURL(url?: string): void {
+    if (url) {
+      this.view?.webContents.loadURL(url);
+    } else {
+      this.clearURL();
+    }
     this.store.set('load-url', {
       url: url,
     });
@@ -124,13 +122,30 @@ export class ViewWindow implements ElectronWindow {
   public clearURL(): void {
     this.view?.webContents.loadURL(this.returnNotfoundHtml());
   }
-  private async setCss(css: string): Promise<void> {
+
+  /**
+   * Cssを設定しストアに保存する
+   * @param insertCss
+   */
+  public async setCss(insertCss: InsertCSS): Promise<void> {
     this.removeCss();
+    let css = '';
+    switch (insertCss.cssMode) {
+      case 'youtube_default':
+        css = this.returnDefaultCss();
+        break;
+      case 'user_custom':
+        css = insertCss.css ? insertCss.css : '';
+        break;
+      default:
+        break;
+    }
     this.insertCSSKey = await this.view?.webContents.insertCSS(css);
-    this.store.set('insert-css', {
-      css: css,
-    });
+    this.store.set('insert-css', insertCss);
   }
+  /**
+   * Cssの適用を削除するだけストアには反映しない
+   */
   private async removeCss(): Promise<void> {
     const insertCSSKey = this.insertCSSKey;
     if (insertCSSKey) {
@@ -138,22 +153,12 @@ export class ViewWindow implements ElectronWindow {
       this.insertCSSKey = undefined;
     }
   }
-  // ユーザーCSSを削除しYouTubeデフォルトCSSにする
+  /**
+   * ユーザーCSSを削除しYouTubeデフォルトCSSにする
+   */
   public resetCss(): void {
-    this.setCss(this.returnDefaultCss());
     this.store.delete('insert-css');
-  }
-  public selectCss(cssMode: string, css: string): void {
-    switch (cssMode) {
-      case 'youtube_default':
-        this.setCss(this.returnDefaultCss());
-        break;
-      case 'user_custom':
-        this.setCss(css);
-        break;
-      default:
-        break;
-    }
+    this.setCss(this.store.get('insert-css'));
   }
 
   private calcWindowPosition(

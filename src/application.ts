@@ -60,6 +60,20 @@ export class Application implements ApplicationInterface {
       oneCommeConfig: oneCommeConfig,
     };
   }
+  public setConfigs(configs: Configs) {
+    this.viewWindow.setURL(configs.loadUrl.url);
+    this.viewWindow.setCss(configs.insertCss);
+    this.viewWindow.setWindowPositionAndSize(
+      configs.windowConfig.width,
+      configs.windowConfig.height,
+      configs.windowConfig.right,
+      configs.windowConfig.bottom
+    );
+    // 現状起動時にのみの設定のため保存するだけ
+    this.store.set('notification', configs.notificationConfig);
+    // 呼び出されるたびにストアからアクセスしているので保存するだけ
+    this.store.set('oneCommeConfig', configs.oneCommeConfig);
+  }
   public resetConfig(): void {
     this.viewWindow.clearURL();
     this.viewWindow.resetCss();

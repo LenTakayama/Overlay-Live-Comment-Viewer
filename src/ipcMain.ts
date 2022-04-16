@@ -8,7 +8,12 @@ export function addIpcMainHandles(application: Application): void {
   ipcMain.handle(IPC_CHANNELS.GET_CONFIGS_CHANNEL, (): Configs => {
     return application.getConfigs();
   });
-
+  ipcMain.handle(
+    IPC_CHANNELS.PUSH_CONFIGS_CHANNEL,
+    (_e, configs: Configs): void => {
+      application.setConfigs(configs);
+    }
+  );
   ipcMain.handle(IPC_CHANNELS.RESET_CONFIGS_REQUEST_CHANNEL, async () => {
     application.resetConfig();
     return application.getConfigs();
