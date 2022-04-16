@@ -33,10 +33,4 @@ export function addIpcMainHandles(application: Application): void {
     bootOneComme(application.store);
     return;
   });
-
-  ipcMain.handle(
-    IPC_CHANNELS.SEND_CSS_MODE_CHANNEL,
-    (_ev, cssMode: string, css: string) =>
-      application.viewWindow.selectCss(cssMode, css)
-  );
 }

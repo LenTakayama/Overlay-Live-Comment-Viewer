@@ -12,7 +12,6 @@ declare global {
       displayComment(): Promise<void>;
       hideComment(): Promise<void>;
       sendOneCommeBootRequest(): Promise<void>;
-      sendCssMode(cssMode: string, css: string): Promise<void>;
     };
   }
 }

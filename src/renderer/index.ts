@@ -220,9 +220,8 @@ class Index {
   private addCssSelectBoxChangeEvent() {
     const element = <HTMLSelectElement>document.getElementById('select_css');
     element.addEventListener('change', () => {
-      const select = element.value;
-      const css = this.getInputElementById('css').value;
-      window.electronApis.sendCssMode(select, css);
+      // saveボタンをクリックすることで設定値を反映させる
+      this.getInputElementById('save').click();
     });
   }
 }
