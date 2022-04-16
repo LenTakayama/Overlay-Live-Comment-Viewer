@@ -16,8 +16,16 @@
         </div>
       </div>
       <div class="right">
-        <label for="css"><h1>CSS</h1></label>
-        <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        <h1>CSS</h1>
+        <label for="select_css">読み込むCSSを選択：</label>
+        <select name="select-css" id="select_css">
+          <option value="youtube_default" selected>YouTube</option>
+          <option value="user_custom">ユーザーカスタム</option>
+        </select>
+        <div>
+          <label for="css">ユーザーカスタムCSS</label>
+          <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        </div>
         <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
       </div>
     </div>

@@ -25,4 +25,6 @@ contextBridge.exposeInMainWorld('electronApis', {
   sendOneCommeBootRequest: async () => {
     await ipcRenderer.invoke(IPC_CHANNELS.ONE_COMME_BOOT_REQUEST_CHANNEL);
   },
+  sendCssMode: async (cssMode: string, css: string) =>
+    await ipcRenderer.invoke(IPC_CHANNELS.SEND_CSS_MODE_CHANNEL, cssMode, css),
 });

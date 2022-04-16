@@ -119,23 +119,35 @@ export class ViewWindow implements ElectronWindow {
   public clearURL(): void {
     this.view?.webContents.loadURL(this.returnNotfoundHtml());
   }
-  public async setCSS(css: string): Promise<void> {
-    await this.removeCSS();
+  private setCss(css: string): void {
+    this.removeCss();
     this.view?.webContents.insertCSS(css);
     this.store.set('insert-css', {
       css: css,
     });
   }
-  public async removeCSS(): Promise<void> {
+  private async removeCss(): Promise<void> {
     const insertCSSKey = this.insertCSSKey;
     if (insertCSSKey) {
       this.view?.webContents.removeInsertedCSS(await insertCSSKey);
+      this.insertCSSKey = undefined;
     }
   }
-  public async resetCSS(): Promise<void> {
-    await this.removeCSS();
-    this.setCSS(this.returnDefaultCss());
+  public resetCss(): void {
+    this.setCss(this.returnDefaultCss());
     this.store.delete('insert-css');
+  }
+  public selectCss(cssMode: string, css: string): void {
+    switch (cssMode) {
+      case 'youtube_default':
+        this.setCss(this.returnDefaultCss());
+        break;
+      case 'user_custom':
+        this.setCss(css);
+        break;
+      default:
+        break;
+    }
   }
 
   private calcWindowPosition(

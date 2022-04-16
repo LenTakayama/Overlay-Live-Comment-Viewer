@@ -28,6 +28,7 @@ export const store = new ElectronStore<StoreSchema>({
     },
     'insert-css': {
       css: undefined,
+      cssMode: 'youtube_default',
     },
     'load-url': {
       url: undefined,

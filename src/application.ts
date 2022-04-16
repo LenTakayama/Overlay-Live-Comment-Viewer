@@ -62,7 +62,7 @@ export class Application implements ApplicationInterface {
   }
   public resetConfig(): void {
     this.viewWindow.clearURL();
-    this.viewWindow.resetCSS();
+    this.viewWindow.resetCss();
     this.viewWindow.resetWindowPositionAndSize();
     this.store.clear();
   }

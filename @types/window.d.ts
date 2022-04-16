@@ -1,5 +1,5 @@
 import { Versions } from './front';
-import { Configs, NotificationConfig, OneCommeConfig } from './main';
+import { Configs, CssMode, NotificationConfig, OneCommeConfig } from './main';
 
 declare global {
   interface Window {
@@ -11,6 +11,7 @@ declare global {
       getVersion(): Versions;
       displayComment(): Promise<void>;
       sendOneCommeBootRequest(): Promise<void>;
+      sendCssMode(cssMode: string, css: string): Promise<void>;
     };
   }
 }

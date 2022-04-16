@@ -6,6 +6,7 @@ import { ViewWindow } from '~/src/window/view';
 
 export type InsertCSS = {
   css?: string;
+  cssMode: string;
 };
 
 export type LoadURL = {

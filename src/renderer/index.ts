@@ -25,6 +25,7 @@ class Index {
     this.addDefaultCssClickEvent();
     this.addDropFileEvent();
     this.addOneCommeBootButtonClick();
+    this.addCssSelectBoxChangeEvent();
 
     // 仕様変更によりローカルストレージを使わなくなったためデータを削除
     this.resetLocalStorage();
@@ -41,6 +42,9 @@ class Index {
   private getInputElementById(id: string): HTMLInputElement {
     return <HTMLInputElement>document.getElementById(id);
   }
+  private getSelectElementById(id: string): HTMLSelectElement {
+    return <HTMLSelectElement>document.getElementById(id);
+  }
 
   private setDisplayConfigs() {
     if (this.configs) {
@@ -51,6 +55,8 @@ class Index {
       this.getInputElementById('css').value = this.configs.insertCss.css
         ? this.configs.insertCss.css
         : '';
+      this.getSelectElementById('select_css').value =
+        this.configs.insertCss.cssMode;
       // 配置・サイズ設定
       this.getInputElementById('right').checked =
         this.configs.windowConfig.right;
@@ -88,6 +94,7 @@ class Index {
       // CSS・URL
       const urlValue = this.getInputElementById('url').value;
       const cssValue = this.getInputElementById('css').value;
+      const cssModeValue = this.getSelectElementById('select_css').value;
       // 配置・サイズ設定
       const isRight = this.getInputElementById('right').checked;
       const isBottom = this.getInputElementById('bottom').checked;
@@ -106,7 +113,7 @@ class Index {
 
       await window.electronApis.pushConfigs({
         loadUrl: { url: urlValue },
-        insertCss: { css: cssValue },
+        insertCss: { css: cssValue, cssMode: cssModeValue },
         windowConfig: {
           bottom: isBottom,
           right: isRight,
@@ -198,6 +205,15 @@ class Index {
       'click',
       async () => await window.electronApis.sendOneCommeBootRequest()
     );
+  }
+
+  private addCssSelectBoxChangeEvent() {
+    const element = <HTMLSelectElement>document.getElementById('select_css');
+    element.addEventListener('change', () => {
+      const select = element.value;
+      const css = this.getInputElementById('css').value;
+      window.electronApis.sendCssMode(select, css);
+    });
   }
 }
 
