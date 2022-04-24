@@ -35,18 +35,15 @@ class Index {
   private resetLocalStorage(): void {
     window.localStorage.clear();
   }
-
   private async getConfigs(): Promise<Configs> {
     return await window.electronApis.getConfigs();
   }
-
   private getInputElementById(id: string): HTMLInputElement {
     return <HTMLInputElement>document.getElementById(id);
   }
   private getSelectElementById(id: string): HTMLSelectElement {
     return <HTMLSelectElement>document.getElementById(id);
   }
-
   private setDisplayConfigs() {
     if (this.configs) {
       // URL・CSS
@@ -67,17 +64,62 @@ class Index {
         this.configs.windowConfig.width.toString();
       this.getInputElementById('height').value =
         this.configs.windowConfig.height.toString();
-      // 通知設定
-      this.getInputElementById('onBoot').checked =
-        this.configs.notificationConfig.onBoot;
+      // 起動設定
+      this.getInputElementById('on_boot_notification').checked =
+        this.configs.onBootConfig.notification;
       this.getInputElementById('noSound').checked =
-        this.configs.notificationConfig.noSound;
+        this.configs.onBootConfig.noSound;
+      this.getInputElementById('on_boot_open_setting').checked =
+        this.configs.onBootConfig.openSetting;
       // わんコメ設定
       this.getInputElementById('one_comme_onboot').checked =
         this.configs.oneCommeConfig.isBoot;
       this.getInputElementById('one_comme_path').value =
         this.configs.oneCommeConfig.path;
     }
+  }
+  private async pushConfigs() {
+    // CSS・URL
+    const urlValue = this.getInputElementById('url').value;
+    const cssValue = this.getInputElementById('css').value;
+    const cssModeValue = this.getSelectElementById('select_css').value;
+    // 配置・サイズ設定
+    const isRight = this.getInputElementById('right').checked;
+    const isBottom = this.getInputElementById('bottom').checked;
+    const widthValue = this.getInputElementById('width').value;
+    const heightValue = this.getInputElementById('height').value;
+    // 起動設定
+    const isNoSound = this.getInputElementById('noSound').checked;
+    const isOnBootNotification = this.getInputElementById(
+      'on_boot_notification'
+    ).checked;
+    const isOnBootOpenSetting = this.getInputElementById(
+      'on_boot_open_setting'
+    ).checked;
+    // わんコメ設定
+    const isOneCommeBoot = (<HTMLInputElement>(
+      document.getElementById('one_comme_onboot')
+    )).checked;
+    const oneCommePath = (<HTMLInputElement>(
+      document.getElementById('one_comme_path')
+    )).value;
+
+    await window.electronApis.pushConfigs({
+      loadUrl: { url: urlValue },
+      insertCss: { css: cssValue, cssMode: cssModeValue },
+      windowConfig: {
+        bottom: isBottom,
+        right: isRight,
+        height: Number(heightValue),
+        width: Number(widthValue),
+      },
+      onBootConfig: {
+        noSound: isNoSound,
+        notification: isOnBootNotification,
+        openSetting: isOnBootOpenSetting,
+      },
+      oneCommeConfig: { isBoot: isOneCommeBoot, path: oneCommePath },
+    });
   }
 
   // コメント表示ボタン
@@ -101,41 +143,7 @@ class Index {
 
   private addSaveClickEvent(): void {
     document.getElementById('save')?.addEventListener('click', async () => {
-      // CSS・URL
-      const urlValue = this.getInputElementById('url').value;
-      const cssValue = this.getInputElementById('css').value;
-      const cssModeValue = this.getSelectElementById('select_css').value;
-      // 配置・サイズ設定
-      const isRight = this.getInputElementById('right').checked;
-      const isBottom = this.getInputElementById('bottom').checked;
-      const widthValue = this.getInputElementById('width').value;
-      const heightValue = this.getInputElementById('height').value;
-      // 通知設定
-      const isNoSound = this.getInputElementById('noSound').checked;
-      const isOnBoot = this.getInputElementById('onBoot').checked;
-      // わんコメ設定
-      const isOneCommeBoot = (<HTMLInputElement>(
-        document.getElementById('one_comme_onboot')
-      )).checked;
-      const oneCommePath = (<HTMLInputElement>(
-        document.getElementById('one_comme_path')
-      )).value;
-
-      await window.electronApis.pushConfigs({
-        loadUrl: { url: urlValue },
-        insertCss: { css: cssValue, cssMode: cssModeValue },
-        windowConfig: {
-          bottom: isBottom,
-          right: isRight,
-          height: Number(heightValue),
-          width: Number(widthValue),
-        },
-        notificationConfig: {
-          noSound: isNoSound,
-          onBoot: isOnBoot,
-        },
-        oneCommeConfig: { isBoot: isOneCommeBoot, path: oneCommePath },
-      });
+      await this.pushConfigs();
     });
   }
 

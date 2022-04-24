@@ -1,10 +1,24 @@
 import ElectronStore from 'electron-store';
 import { getOneCommePath } from '../integrations/oneComme';
-import { StoreSchema } from '@/@types/main';
+import { NotificationConfig, StoreSchema } from '@/@types/main';
 
 export const store = new ElectronStore<StoreSchema>({
   name: 'config',
   migrations: {
+    '>=1.1.0': (migStore) => {
+      const notificationConfig = <NotificationConfig>(
+        migStore.get('notification')
+      );
+      migStore.set('onBootConfig', {
+        noSound: notificationConfig.noSound,
+        notification: notificationConfig.onBoot,
+        openSetting: true,
+      });
+      // スキーマからはずしたため削除しようとするとTSのチェックでエラーになるため除外
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      migStore.delete('notification');
+    },
     '1.0.0': (migStore) => {
       const oldData = migStore.get('window-size', {
         height: 500,
@@ -33,9 +47,10 @@ export const store = new ElectronStore<StoreSchema>({
     'load-url': {
       url: undefined,
     },
-    notification: {
+    onBootConfig: {
       noSound: false,
-      onBoot: true,
+      notification: true,
+      openSetting: true,
     },
     oneCommeConfig: {
       isBoot: false,

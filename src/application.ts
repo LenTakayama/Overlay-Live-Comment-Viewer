@@ -50,13 +50,13 @@ export class Application implements ApplicationInterface {
     const url = this.store.get('load-url');
     const css = this.store.get('insert-css');
     const windowConfig = this.store.get('comment-window-config');
-    const notificationConfig = this.store.get('notification');
+    const onBootConfig = this.store.get('onBootConfig');
     const oneCommeConfig = this.store.get('oneCommeConfig');
     return {
       loadUrl: url,
       insertCss: css,
       windowConfig: windowConfig,
-      notificationConfig: notificationConfig,
+      onBootConfig: onBootConfig,
       oneCommeConfig: oneCommeConfig,
     };
   }
@@ -70,7 +70,7 @@ export class Application implements ApplicationInterface {
       configs.windowConfig.bottom
     );
     // 現状起動時にのみの設定のため保存するだけ
-    this.store.set('notification', configs.notificationConfig);
+    this.store.set('onBootConfig', configs.onBootConfig);
     // 呼び出されるたびにストアからアクセスしているので保存するだけ
     this.store.set('oneCommeConfig', configs.oneCommeConfig);
   }
@@ -100,9 +100,10 @@ export class Application implements ApplicationInterface {
       }
       // TrayはReadyの前に作成はできない
       this.tray = createTray(this);
+      const onBootOpenSetting = this.store.get('onBootConfig').openSetting;
       const loadVersion = this.store.get('version');
-      // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
-      if (loadVersion !== app.getVersion()) {
+      // バージョンが一致してない場合、初回起動かアップデートどちらかとみなせる
+      if (onBootOpenSetting || loadVersion !== app.getVersion()) {
         this.store.set('version', app.getVersion());
         this.createReadmeWindow();
       }

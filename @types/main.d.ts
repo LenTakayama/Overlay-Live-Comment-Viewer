@@ -25,9 +25,10 @@ export type WindowConfig = {
   height: number;
 };
 
-export type NotificationConfig = {
+export type OnBootConfig = {
   noSound: boolean;
-  onBoot: boolean;
+  notification: boolean;
+  openSetting: boolean;
 };
 
 export type OneCommeConfig = {
@@ -35,11 +36,17 @@ export type OneCommeConfig = {
   path: string;
 };
 
+// 廃止
+export type NotificationConfig = {
+  noSound: boolean;
+  onBoot: boolean;
+};
+
 export type Configs = {
   loadUrl: LoadURL;
   insertCss: InsertCSS;
   windowConfig: WindowConfig;
-  notificationConfig: NotificationConfig;
+  onBootConfig: OnBootConfig;
   oneCommeConfig: OneCommeConfig;
 };
 
@@ -48,7 +55,7 @@ export type StoreSchema = {
   'comment-window-config': WindowConfig;
   'insert-css': InsertCSS;
   'load-url': LoadURL;
-  notification: NotificationConfig;
+  onBootConfig: OnBootConfig;
   oneCommeConfig: OneCommeConfig;
 };
 
