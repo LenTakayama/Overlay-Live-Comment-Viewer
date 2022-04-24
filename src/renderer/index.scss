@@ -47,7 +47,8 @@ button {
   }
 }
 .display,
-.save {
+.save,
+.hide-comment {
   background: dodgerblue;
   border: solid 1px rgb(21, 85, 148);
   &:hover {
