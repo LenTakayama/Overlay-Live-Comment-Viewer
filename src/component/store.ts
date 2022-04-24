@@ -6,6 +6,11 @@ export const store = new ElectronStore<StoreSchema>({
   name: 'config',
   migrations: {
     '>=1.1.0': (migStore) => {
+      const insertCss = migStore.get('insert-css');
+      migStore.set('insert-css', {
+        css: insertCss.css,
+        cssMode: 'youtube_default',
+      });
       const notificationConfig = <NotificationConfig>(
         migStore.get('notification')
       );
