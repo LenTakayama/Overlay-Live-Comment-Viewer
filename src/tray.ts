@@ -6,7 +6,7 @@ import { getExtraDirectory } from './utility';
 
 // readyイベント前に呼び出せない
 export function createTray(application: Application): Tray {
-  const config = application.store.get('notification');
+  const config = application.store.get('onBootConfig');
   const tray = new Tray(
     nativeImage.createFromPath(join(getExtraDirectory(), 'win_icon.png'))
   );
@@ -71,7 +71,7 @@ export function createTray(application: Application): Tray {
   tray.on('click', () => {
     tray.popUpContextMenu(menu);
   });
-  if (config.onBoot) {
+  if (config.notification) {
     tray.displayBalloon({
       title: 'OLCV起動完了',
       content: '通知領域のアイコンからコメントの表示と設定が出来ます',
