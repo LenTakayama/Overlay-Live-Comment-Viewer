@@ -147,9 +147,8 @@ export class ViewWindow implements ElectronWindow {
    * Cssの適用を削除するだけストアには反映しない
    */
   private async removeCss(): Promise<void> {
-    const insertCSSKey = this.insertCSSKey;
-    if (insertCSSKey) {
-      await this.view?.webContents.removeInsertedCSS(insertCSSKey);
+    if (this.insertCSSKey) {
+      await this.view?.webContents.removeInsertedCSS(this.insertCSSKey);
       this.insertCSSKey = undefined;
     }
   }
