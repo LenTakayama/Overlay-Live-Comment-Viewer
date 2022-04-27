@@ -157,7 +157,7 @@ export class ViewWindow implements ElectronWindow {
    * ユーザーCSSを削除しYouTubeデフォルトCSSにする
    */
   public resetCss(): void {
-    this.store.delete('insert-css');
+    this.store.reset('insert-css');
     this.setCss(this.store.get('insert-css'));
   }
 
