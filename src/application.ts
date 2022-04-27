@@ -103,9 +103,12 @@ export class Application implements ApplicationInterface {
       const onBootOpenSetting = this.store.get('onBootConfig').openSetting;
       const loadVersion = this.store.get('version');
       // バージョンが一致してない場合、初回起動かアップデートどちらかとみなせる
-      if (onBootOpenSetting || loadVersion !== app.getVersion()) {
+      if (loadVersion !== app.getVersion()) {
         this.store.set('version', app.getVersion());
         this.createReadmeWindow();
+      }
+      if (onBootOpenSetting) {
+        this.createSettingWindow();
       }
       const oneCommeConfig = this.store.get('oneCommeConfig');
       onBootOpenOneComme(oneCommeConfig);
