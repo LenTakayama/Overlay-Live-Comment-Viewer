@@ -75,7 +75,7 @@ export function createTray(application: Application): Tray {
     if (application.settingWindow.window) {
       application.settingWindow.window.focus();
     } else {
-      application.createViewWindow();
+      application.createSettingWindow();
     }
   });
   if (config.onBoot) {
