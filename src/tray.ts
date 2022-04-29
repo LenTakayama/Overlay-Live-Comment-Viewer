@@ -18,7 +18,7 @@ export function createTray(application: Application): Tray {
         if (application.viewWindow.window) {
           application.viewWindow.window.showInactive();
         } else {
-          application.createViewWindow();
+          application.createSettingWindow();
         }
       },
     },
@@ -70,6 +70,13 @@ export function createTray(application: Application): Tray {
   tray.setContextMenu(menu);
   tray.on('click', () => {
     tray.popUpContextMenu(menu);
+  });
+  tray.on('double-click', () => {
+    if (application.settingWindow.window) {
+      application.settingWindow.window.focus();
+    } else {
+      application.createSettingWindow();
+    }
   });
   if (config.onBoot) {
     tray.displayBalloon({
