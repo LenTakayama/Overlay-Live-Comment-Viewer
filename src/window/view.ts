@@ -1,7 +1,7 @@
 import { BrowserView, BrowserWindow, screen } from 'electron';
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { ElectronWindow, StoreSchema } from '~/@types/main';
+import { ElectronWindow, InsertCSS, StoreSchema } from '~/@types/main';
 import { getResourceDirectory, getExtraDirectory } from '~/src/utility';
 import { closeWindow } from './utility';
 import ElectronStore from 'electron-store';
@@ -10,14 +10,14 @@ export class ViewWindow implements ElectronWindow {
   public window?: BrowserWindow;
   public view?: BrowserView;
   public store: ElectronStore<StoreSchema>;
-  public insertCSSKey?: Promise<string>;
+  public insertCSSKey?: string;
 
   constructor(store: ElectronStore<StoreSchema>) {
     this.store = store;
   }
   public create(): void {
     const loadURL = this.store.get('load-url');
-    const insertCSS = this.store.get('insert-css');
+    const insertCss = this.store.get('insert-css');
     const windowConfig = this.store.get('comment-window-config');
     const position = this.calcWindowPosition(
       windowConfig.width,
@@ -71,13 +71,12 @@ export class ViewWindow implements ElectronWindow {
       height: windowConfig.height,
     });
     this.view.setAutoResize({ width: true, height: true });
-    this.view.webContents.loadURL(
-      loadURL.url ? loadURL.url : this.returnNotfoundHtml()
-    );
-    this.view.webContents.once('did-finish-load', () => {
-      this.insertCSSKey = this.view?.webContents.insertCSS(
-        insertCSS.css ? insertCSS.css : this.returnDefaultCss()
-      );
+    this.view.webContents
+      .loadURL(loadURL.url ? loadURL.url : this.returnNotfoundHtml())
+      .then(() => {
+        this.setCss(insertCss);
+      });
+    this.view.webContents.once('did-finish-load', async () => {
       this.window?.showInactive();
     });
 
@@ -110,8 +109,17 @@ export class ViewWindow implements ElectronWindow {
   public resetWindowPositionAndSize(): void {
     this.setWindowPositionAndSize(400, 500, true, false);
   }
-  public setURL(url: string): void {
-    this.view?.webContents.loadURL(url);
+  public setURL(url?: string): void {
+    const storeUrl = this.store.get('load-url');
+    // 同じURLなら読み込まない
+    if (storeUrl.url == url) {
+      return;
+    }
+    if (url) {
+      this.view?.webContents.loadURL(url);
+    } else {
+      this.clearURL();
+    }
     this.store.set('load-url', {
       url: url,
     });
@@ -119,23 +127,46 @@ export class ViewWindow implements ElectronWindow {
   public clearURL(): void {
     this.view?.webContents.loadURL(this.returnNotfoundHtml());
   }
-  public async setCSS(css: string): Promise<void> {
-    await this.removeCSS();
-    this.view?.webContents.insertCSS(css);
-    this.store.set('insert-css', {
-      css: css,
-    });
-  }
-  public async removeCSS(): Promise<void> {
-    const insertCSSKey = this.insertCSSKey;
-    if (insertCSSKey) {
-      this.view?.webContents.removeInsertedCSS(await insertCSSKey);
+
+  /**
+   * Cssを設定しストアに保存する
+   * @param insertCss
+   */
+  public async setCss(insertCss: InsertCSS): Promise<void> {
+    await this.removeCss();
+    let css = '';
+    switch (insertCss.cssMode) {
+      case 'youtube_default':
+        css = this.returnDefaultCss();
+        break;
+      case 'user_custom':
+        css = insertCss.css ? insertCss.css : '';
+        break;
+      default:
+        break;
+    }
+    if (this.view) {
+      this.view.webContents.insertCSS(css).then((value) => {
+        this.insertCSSKey = value;
+      });
+      this.store.set('insert-css', insertCss);
     }
   }
-  public async resetCSS(): Promise<void> {
-    await this.removeCSS();
-    this.setCSS(this.returnDefaultCss());
-    this.store.delete('insert-css');
+  /**
+   * Cssの適用を削除するだけストアには反映しない
+   */
+  private async removeCss(): Promise<void> {
+    if (this.insertCSSKey) {
+      await this.view?.webContents.removeInsertedCSS(this.insertCSSKey);
+      this.insertCSSKey = undefined;
+    }
+  }
+  /**
+   * ユーザーCSSを削除しYouTubeデフォルトCSSにする
+   */
+  public resetCss(): void {
+    this.store.reset('insert-css');
+    this.setCss(this.store.get('insert-css'));
   }
 
   private calcWindowPosition(

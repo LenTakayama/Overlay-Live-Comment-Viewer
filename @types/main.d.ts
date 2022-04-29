@@ -5,11 +5,12 @@ import { SettingWindow } from '~/src/window/setting';
 import { ViewWindow } from '~/src/window/view';
 
 export type InsertCSS = {
-  css: string | null;
+  css?: string;
+  cssMode: string;
 };
 
 export type LoadURL = {
-  url: string | null;
+  url?: string;
 };
 
 export type WindowSize = {
@@ -24,9 +25,10 @@ export type WindowConfig = {
   height: number;
 };
 
-export type NotificationConfig = {
+export type OnBootConfig = {
   noSound: boolean;
-  onBoot: boolean;
+  notification: boolean;
+  openSetting: boolean;
 };
 
 export type OneCommeConfig = {
@@ -34,28 +36,27 @@ export type OneCommeConfig = {
   path: string;
 };
 
+// 廃止
+export type NotificationConfig = {
+  noSound: boolean;
+  onBoot: boolean;
+};
+
+export type Configs = {
+  loadUrl: LoadURL;
+  insertCss: InsertCSS;
+  windowConfig: WindowConfig;
+  onBootConfig: OnBootConfig;
+  oneCommeConfig: OneCommeConfig;
+};
+
 export type StoreSchema = {
   version: string;
-  'comment-window-config': {
-    right: boolean;
-    bottom: boolean;
-    width: number;
-    height: number;
-  };
-  'insert-css': {
-    css?: string;
-  };
-  'load-url': {
-    url?: string;
-  };
-  notification: {
-    noSound: boolean;
-    onBoot: boolean;
-  };
-  oneCommeConfig: {
-    isBoot: boolean;
-    path: string;
-  };
+  'comment-window-config': WindowConfig;
+  'insert-css': InsertCSS;
+  'load-url': LoadURL;
+  onBootConfig: OnBootConfig;
+  oneCommeConfig: OneCommeConfig;
 };
 
 export interface ElectronWindow {

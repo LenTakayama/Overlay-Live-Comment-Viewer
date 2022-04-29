@@ -16,8 +16,16 @@
         </div>
       </div>
       <div class="right">
-        <label for="css"><h1>CSS</h1></label>
-        <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        <h1>CSS</h1>
+        <label for="select_css">読み込むCSSを選択：</label>
+        <select name="select-css" id="select_css">
+          <option value="youtube_default" selected>YouTube</option>
+          <option value="user_custom">ユーザーカスタム</option>
+        </select>
+        <div>
+          <label for="css">ユーザーカスタムCSS</label>
+          <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        </div>
         <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
       </div>
     </div>
@@ -50,16 +58,26 @@
       </div>
     </div>
     <div>
+      <h1>起動設定</h1>
       <div>
-        <h1>通知</h1>
-        <div>
-          <label for="onBoot">起動時通知する</label>
-          <input type="checkbox" name="onBoot" id="onBoot" />
-        </div>
-        <div>
-          <label for="noSound">音声通知しない</label>
-          <input type="checkbox" name="noSound" id="noSound" />
-        </div>
+        <label for="on_boot_open_setting">起動時設定画面を開く</label>
+        <input
+          type="checkbox"
+          name="on_boot_open_setting"
+          id="on_boot_open_setting"
+        />
+      </div>
+      <div>
+        <label for="on_boot_notification">起動時通知する</label>
+        <input
+          type="checkbox"
+          name="on_boot_notification"
+          id="on_boot_notification"
+        />
+      </div>
+      <div>
+        <label for="noSound">音声通知しない</label>
+        <input type="checkbox" name="noSound" id="noSound" />
       </div>
     </div>
     <details>
@@ -67,7 +85,7 @@
         <h1>アプリ連携設定</h1>
       </summary>
       <div>
-        <label for="one-comme-onboot"
+        <label for="one_comme_onboot"
           >起動時にわんコメをあわせて立ち上げる</label
         >
         <input type="checkbox" name="one-comme-onboot" id="one_comme_onboot" />
@@ -76,15 +94,25 @@
         </button>
       </div>
       <div>
-        <label for="one-comme-path">わんコメのパス</label>
-        <input type="text" name="one-comme-path" id="one_comme_path" />
+        <label for="one_comme_path">わんコメのパス</label>
+        <br />
+        <input
+          type="text"
+          class="one-comme-path"
+          name="one-comme-path"
+          id="one_comme_path"
+        />
       </div>
     </details>
     <hr />
     <div>
-      <button id="display" class="display">コメント表示</button>
       <button id="save" class="save">保存</button>
       <button id="reset" class="reset">設定を初期化する</button>
+    </div>
+    <br />
+    <div>
+      <button id="display" class="display">コメント表示</button>
+      <button id="hide_comment" class="hide-comment">コメント非表示</button>
     </div>
     <footer>
       <div id="version"></div>

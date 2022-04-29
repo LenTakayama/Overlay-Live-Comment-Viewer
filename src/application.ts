@@ -1,11 +1,7 @@
 import { app, shell, Tray } from 'electron';
 import ElectronLog from 'electron-log';
 import ElectronStore from 'electron-store';
-import {
-  ApplicationInterface,
-  NotificationConfig,
-  StoreSchema,
-} from '~/@types/main';
+import { ApplicationInterface, Configs, StoreSchema } from '~/@types/main';
 import { onBootOpenOneComme } from './integrations/oneComme';
 import { addIpcMainHandles } from './ipcMain';
 import { createTray } from './tray';
@@ -49,14 +45,40 @@ export class Application implements ApplicationInterface {
     this.readmeWindow.create();
   }
 
+  public getConfigs(): Configs {
+    // TODO: パフォーマンスの問題が出てきたらプロパティに持つようにする
+    const url = this.store.get('load-url');
+    const css = this.store.get('insert-css');
+    const windowConfig = this.store.get('comment-window-config');
+    const onBootConfig = this.store.get('onBootConfig');
+    const oneCommeConfig = this.store.get('oneCommeConfig');
+    return {
+      loadUrl: url,
+      insertCss: css,
+      windowConfig: windowConfig,
+      onBootConfig: onBootConfig,
+      oneCommeConfig: oneCommeConfig,
+    };
+  }
+  public setConfigs(configs: Configs) {
+    this.viewWindow.setURL(configs.loadUrl.url);
+    this.viewWindow.setCss(configs.insertCss);
+    this.viewWindow.setWindowPositionAndSize(
+      configs.windowConfig.width,
+      configs.windowConfig.height,
+      configs.windowConfig.right,
+      configs.windowConfig.bottom
+    );
+    // 現状起動時にのみの設定のため保存するだけ
+    this.store.set('onBootConfig', configs.onBootConfig);
+    // 呼び出されるたびにストアからアクセスしているので保存するだけ
+    this.store.set('oneCommeConfig', configs.oneCommeConfig);
+  }
   public resetConfig(): void {
     this.viewWindow.clearURL();
-    this.viewWindow.resetCSS();
+    this.viewWindow.resetCss();
     this.viewWindow.resetWindowPositionAndSize();
     this.store.clear();
-  }
-  public saveNotificationConfig(config: NotificationConfig): void {
-    this.store.set('notification', config);
   }
 
   private addOnReadyEventHandler() {
@@ -78,11 +100,15 @@ export class Application implements ApplicationInterface {
       }
       // TrayはReadyの前に作成はできない
       this.tray = createTray(this);
+      const onBootOpenSetting = this.store.get('onBootConfig').openSetting;
       const loadVersion = this.store.get('version');
-      // バージョンが一致してない場合初回起動かアップデートどちらかとみなせる
+      // バージョンが一致してない場合、初回起動かアップデートどちらかとみなせる
       if (loadVersion !== app.getVersion()) {
         this.store.set('version', app.getVersion());
         this.createReadmeWindow();
+      }
+      if (onBootOpenSetting) {
+        this.createSettingWindow();
       }
       const oneCommeConfig = this.store.get('oneCommeConfig');
       onBootOpenOneComme(oneCommeConfig);

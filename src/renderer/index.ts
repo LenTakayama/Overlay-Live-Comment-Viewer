@@ -1,68 +1,128 @@
-import { Versions } from '~/@types/front';
+import { Configs } from '~/@types/main';
 window.eval = global.eval = () => {
   throw new Error("Can't use eval().");
 };
 
 class Index {
-  private version!: Versions;
-  private url: string | null = null;
-  private css: string | null = null;
+  private configs?: Configs;
   constructor() {
-    this.loadLocalStorage();
-    this.version = window.electronApis.getVersion();
-    this.displayVersion();
-    this.initMain();
+    // 各値をセット
+    this.getConfigs().then((value) => {
+      this.configs = value;
+      this.setDisplayConfigs();
+    });
+
+    // バージョン表示を生成
+    const version = window.electronApis.getVersion();
+    const versionText = document.createElement('p');
+    versionText.textContent = `Version:${version.app}\nNode:${version.node}\nElectron:${version.electron}`;
+    document.getElementById('version')?.appendChild(versionText);
+
+    // 各種要素に対してイベントを設定
     this.addDisplayClickEvent();
+    this.addHideCommentButtonClickEvent();
     this.addSaveClickEvent();
     this.addResetClickEvent();
     this.addDefaultCssClickEvent();
     this.addDropFileEvent();
     this.addOneCommeBootButtonClick();
+    this.addCssSelectBoxChangeEvent();
+
+    // 仕様変更によりローカルストレージを使わなくなったためデータを削除
+    this.resetLocalStorage();
   }
 
-  private displayVersion(): void {
-    const versionText = document.createElement('p');
-    versionText.textContent = `Version:${this.version.app}\nNode:${this.version.node}\nElectron:${this.version.electron}`;
-    document.getElementById('version')?.appendChild(versionText);
+  private resetLocalStorage(): void {
+    window.localStorage.clear();
+  }
+  private async getConfigs(): Promise<Configs> {
+    return await window.electronApis.getConfigs();
+  }
+  private getInputElementById(id: string): HTMLInputElement {
+    return <HTMLInputElement>document.getElementById(id);
+  }
+  private getSelectElementById(id: string): HTMLSelectElement {
+    return <HTMLSelectElement>document.getElementById(id);
+  }
+  private setDisplayConfigs() {
+    if (this.configs) {
+      // URL・CSS
+      this.getInputElementById('url').value = this.configs.loadUrl.url
+        ? this.configs.loadUrl.url
+        : '';
+      this.getInputElementById('css').value = this.configs.insertCss.css
+        ? this.configs.insertCss.css
+        : '';
+      this.getSelectElementById('select_css').value =
+        this.configs.insertCss.cssMode;
+      // 配置・サイズ設定
+      this.getInputElementById('right').checked =
+        this.configs.windowConfig.right;
+      this.getInputElementById('bottom').checked =
+        this.configs.windowConfig.bottom;
+      this.getInputElementById('width').value =
+        this.configs.windowConfig.width.toString();
+      this.getInputElementById('height').value =
+        this.configs.windowConfig.height.toString();
+      // 起動設定
+      this.getInputElementById('on_boot_notification').checked =
+        this.configs.onBootConfig.notification;
+      this.getInputElementById('noSound').checked =
+        this.configs.onBootConfig.noSound;
+      this.getInputElementById('on_boot_open_setting').checked =
+        this.configs.onBootConfig.openSetting;
+      // わんコメ設定
+      this.getInputElementById('one_comme_onboot').checked =
+        this.configs.oneCommeConfig.isBoot;
+      this.getInputElementById('one_comme_path').value =
+        this.configs.oneCommeConfig.path;
+    }
+  }
+  private async pushConfigs() {
+    // CSS・URL
+    const urlValue = this.getInputElementById('url').value;
+    const cssValue = this.getInputElementById('css').value;
+    const cssModeValue = this.getSelectElementById('select_css').value;
+    // 配置・サイズ設定
+    const isRight = this.getInputElementById('right').checked;
+    const isBottom = this.getInputElementById('bottom').checked;
+    const widthValue = this.getInputElementById('width').value;
+    const heightValue = this.getInputElementById('height').value;
+    // 起動設定
+    const isNoSound = this.getInputElementById('noSound').checked;
+    const isOnBootNotification = this.getInputElementById(
+      'on_boot_notification'
+    ).checked;
+    const isOnBootOpenSetting = this.getInputElementById(
+      'on_boot_open_setting'
+    ).checked;
+    // わんコメ設定
+    const isOneCommeBoot = (<HTMLInputElement>(
+      document.getElementById('one_comme_onboot')
+    )).checked;
+    const oneCommePath = (<HTMLInputElement>(
+      document.getElementById('one_comme_path')
+    )).value;
+
+    await window.electronApis.pushConfigs({
+      loadUrl: { url: urlValue },
+      insertCss: { css: cssValue, cssMode: cssModeValue },
+      windowConfig: {
+        bottom: isBottom,
+        right: isRight,
+        height: Number(heightValue),
+        width: Number(widthValue),
+      },
+      onBootConfig: {
+        noSound: isNoSound,
+        notification: isOnBootNotification,
+        openSetting: isOnBootOpenSetting,
+      },
+      oneCommeConfig: { isBoot: isOneCommeBoot, path: oneCommePath },
+    });
   }
 
-  private loadLocalStorage(): void {
-    const right = localStorage.getItem('right');
-    const bottom = localStorage.getItem('bottom');
-    const width = localStorage.getItem('width');
-    const height = localStorage.getItem('height');
-    if (right) {
-      (<HTMLInputElement>document.getElementById('right')).checked =
-        /true/.test(right);
-    } else {
-      (<HTMLInputElement>document.getElementById('right')).checked = true;
-    }
-    if (bottom) {
-      (<HTMLInputElement>document.getElementById('bottom')).checked =
-        /true/.test(bottom);
-    } else {
-      (<HTMLInputElement>document.getElementById('bottom')).checked = false;
-    }
-    if (width) {
-      (<HTMLInputElement>document.getElementById('width')).value = width;
-    } else {
-      (<HTMLInputElement>document.getElementById('width')).value = '400';
-    }
-    if (height) {
-      (<HTMLInputElement>document.getElementById('height')).value = height;
-    } else {
-      (<HTMLInputElement>document.getElementById('height')).value = '500';
-    }
-  }
-
-  private async initMain() {
-    const notificationConfig = await window.electronApis.init();
-    (<HTMLInputElement>document.getElementById('noSound')).checked =
-      notificationConfig.noSound;
-    (<HTMLInputElement>document.getElementById('onBoot')).checked =
-      notificationConfig.onBoot;
-  }
-
+  // コメント表示ボタン
   private addDisplayClickEvent(): void {
     document
       .getElementById('display')
@@ -71,80 +131,29 @@ class Index {
         async () => await window.electronApis.displayComment()
       );
   }
+  // コメント非表示ボタン
+  private addHideCommentButtonClickEvent(): void {
+    this.getInputElementById('hide_comment').addEventListener(
+      'click',
+      async () => {
+        await window.electronApis.hideComment();
+      }
+    );
+  }
 
   private addSaveClickEvent(): void {
     document.getElementById('save')?.addEventListener('click', async () => {
-      const urlValue = (<HTMLInputElement>document.getElementById('url')).value;
-      const cssValue = (<HTMLInputElement>document.getElementById('css')).value;
-      const isRight = (<HTMLInputElement>document.getElementById('right'))
-        .checked;
-      const isBottom = (<HTMLInputElement>document.getElementById('bottom'))
-        .checked;
-      const widthValue = (<HTMLInputElement>document.getElementById('width'))
-        .value;
-      const heightValue = (<HTMLInputElement>document.getElementById('height'))
-        .value;
-      const noSound = (<HTMLInputElement>document.getElementById('noSound'))
-        .checked;
-      const onBoot = (<HTMLInputElement>document.getElementById('onBoot'))
-        .checked;
-      if (urlValue && urlValue !== this.url) {
-        await window.electronApis.sendLoadURL(urlValue);
-        this.url = urlValue;
-      }
-      if (cssValue && cssValue !== this.css) {
-        await window.electronApis.sendInsertCSS(cssValue);
-        this.css = cssValue;
-      }
-      const isOneCommeBoot = (<HTMLInputElement>(
-        document.getElementById('one_comme_onboot')
-      )).checked;
-      const oneCommePath = (<HTMLInputElement>(
-        document.getElementById('one_comme_path')
-      )).value;
-      Promise.all([
-        window.electronApis.sendWindowConfig(
-          Number(widthValue),
-          Number(heightValue),
-          isRight,
-          isBottom
-        ),
-        window.electronApis.sendNotificationConfig({
-          noSound: noSound,
-          onBoot: onBoot,
-        }),
-        window.electronApis.sendOneCommeConfig({
-          isBoot: isOneCommeBoot,
-          path: oneCommePath,
-        }),
-      ])
-        .then()
-        // eslint-disable-next-line no-console
-        .catch((err) => console.error(err));
-      // ロード時にセットするためにローカルストレージに保存
-      localStorage.setItem('width', widthValue);
-      localStorage.setItem('height', heightValue);
-      localStorage.setItem('right', isRight.toString());
-      localStorage.setItem('bottom', isBottom.toString());
+      await this.pushConfigs();
     });
   }
 
   private addResetClickEvent(): void {
     document.getElementById('reset')?.addEventListener('click', async () => {
       if (confirm('設定を初期設定に戻しますがよろしいでしょうか？')) {
-        (<HTMLInputElement>document.getElementById('url')).value = '';
-        (<HTMLInputElement>document.getElementById('css')).value = '';
-        (<HTMLInputElement>document.getElementById('right')).checked = true;
-        (<HTMLInputElement>document.getElementById('bottom')).checked = false;
-        (<HTMLInputElement>document.getElementById('width')).value = '400';
-        (<HTMLInputElement>document.getElementById('height')).value = '500';
-        (<HTMLInputElement>document.getElementById('noSound')).checked = false;
-        (<HTMLInputElement>document.getElementById('onBoot')).checked = true;
-        localStorage.setItem('width', '400');
-        localStorage.setItem('height', '500');
-        localStorage.setItem('right', 'true');
-        localStorage.setItem('bottom', 'false');
-        await window.electronApis.sendReset();
+        await window.electronApis.sendResetConfigsRequest().then((configs) => {
+          this.configs = configs;
+          this.setDisplayConfigs();
+        });
       }
     });
   }
@@ -154,7 +163,9 @@ class Index {
       .getElementById('default-css')
       ?.addEventListener('click', async () => {
         if (confirm('CSSを初期設定に戻しますがよろしいでしょうか？')) {
-          this.css = null;
+          if (this.configs?.insertCss.css) {
+            this.configs.insertCss.css = undefined;
+          }
           await window.electronApis.sendDefaultCss();
         }
       });
@@ -210,8 +221,16 @@ class Index {
     const button = document.getElementById('one_comme_boot');
     button?.addEventListener(
       'click',
-      async () => await window.electronApis.sendOneCommeBoot()
+      async () => await window.electronApis.sendOneCommeBootRequest()
     );
+  }
+
+  private addCssSelectBoxChangeEvent() {
+    const element = <HTMLSelectElement>document.getElementById('select_css');
+    element.addEventListener('change', () => {
+      // saveボタンをクリックすることで設定値を反映させる
+      this.getInputElementById('save').click();
+    });
   }
 }
 
