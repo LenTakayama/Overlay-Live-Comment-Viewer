@@ -185,7 +185,7 @@ const renderer = {
     ],
   },
   output: {
-    filename: '[name]-[hash].bundle.js',
+    filename: '[name].bundle.js',
     path: buildDirPath,
   },
   module: {
@@ -208,7 +208,7 @@ const renderer = {
       filename: 'readme.html',
     }),
     new MiniCssExtractPlugin({
-      filename: '[name]-[hash].bundle.css',
+      filename: '[name].bundle.css',
       chunkFilename: '[id].css',
     }),
     new ForkTsCheckerWebpackPlugin(forkTsCheckerConfig),
