@@ -110,6 +110,11 @@ export class ViewWindow implements ElectronWindow {
     this.setWindowPositionAndSize(400, 500, true, false);
   }
   public setURL(url?: string): void {
+    const storeUrl = this.store.get('load-url');
+    // 同じURLなら読み込まない
+    if (storeUrl.url == url) {
+      return;
+    }
     if (url) {
       this.view?.webContents.loadURL(url);
     } else {
