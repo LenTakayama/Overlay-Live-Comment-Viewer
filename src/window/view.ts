@@ -73,7 +73,7 @@ export class ViewWindow implements ElectronWindow {
     this.view.setAutoResize({ width: true, height: true });
     this.view.webContents
       .loadURL(loadURL.url ? loadURL.url : this.returnNotfoundHtml())
-      .then(async () => {
+      .then(() => {
         this.setCss(insertCss);
       });
     this.view.webContents.once('did-finish-load', async () => {
@@ -133,7 +133,7 @@ export class ViewWindow implements ElectronWindow {
    * @param insertCss
    */
   public async setCss(insertCss: InsertCSS): Promise<void> {
-    this.removeCss();
+    await this.removeCss();
     let css = '';
     switch (insertCss.cssMode) {
       case 'youtube_default':
@@ -145,8 +145,12 @@ export class ViewWindow implements ElectronWindow {
       default:
         break;
     }
-    this.insertCSSKey = await this.view?.webContents.insertCSS(css);
-    this.store.set('insert-css', insertCss);
+    if (this.view) {
+      this.view.webContents.insertCSS(css).then((value) => {
+        this.insertCSSKey = value;
+      });
+      this.store.set('insert-css', insertCss);
+    }
   }
   /**
    * Cssの適用を削除するだけストアには反映しない
