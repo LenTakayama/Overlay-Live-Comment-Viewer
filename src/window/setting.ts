@@ -17,7 +17,6 @@ export class SettingWindow implements ElectronWindow {
       show: false,
       frame: true,
       autoHideMenuBar: true,
-      resizable: false,
       height: 760,
       width: 400,
       webPreferences: {
