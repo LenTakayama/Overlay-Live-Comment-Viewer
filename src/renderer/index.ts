@@ -197,10 +197,10 @@ class Index {
       if (urlElement) {
         element.addEventListener(
           'drop',
-          function (e) {
+          (e) => {
             e.stopPropagation();
             e.preventDefault();
-            this.style.background = 'darkgrey';
+            element.style.background = 'darkgrey';
             const files = e.dataTransfer?.files;
             if (!files) {
               return;
@@ -211,6 +211,8 @@ class Index {
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 files.item(0)!.path
               : '';
+            // ドロップされたら設定を保存
+            this.pushConfigs();
           },
           false
         );
