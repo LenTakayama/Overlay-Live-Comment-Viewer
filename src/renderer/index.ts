@@ -27,6 +27,7 @@ class Index {
     this.addDropFileEvent();
     this.addOneCommeBootButtonClick();
     this.addCssSelectBoxChangeEvent();
+    this.addSaveAndDisplayCommentButtonClickEvent();
 
     // 仕様変更によりローカルストレージを使わなくなったためデータを削除
     this.resetLocalStorage();
@@ -231,6 +232,12 @@ class Index {
       this.pushConfigs();
     });
   }
+
+  private addSaveAndDisplayCommentButtonClickEvent() {
+    const button = this.getInputElementById('save_and_display_comment');
+    button.addEventListener('click', async () => {
+      await this.pushConfigs();
+      window.electronApis.displayComment();
     });
   }
 }
