@@ -226,10 +226,11 @@ class Index {
   }
 
   private addCssSelectBoxChangeEvent() {
-    const element = <HTMLSelectElement>document.getElementById('select_css');
+    const element = this.getSelectElementById('select_css');
     element.addEventListener('change', () => {
-      // saveボタンをクリックすることで設定値を反映させる
-      this.getInputElementById('save').click();
+      this.pushConfigs();
+    });
+  }
     });
   }
 }
