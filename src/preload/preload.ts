@@ -13,7 +13,8 @@ contextBridge.exposeInMainWorld('electronApis', {
     await (<Promise<Configs>>(
       ipcRenderer.invoke(IPC_CHANNELS.RESET_CONFIGS_REQUEST_CHANNEL)
     )),
-  sendDefaultCss: async () => await ipcRenderer.invoke('default-css'),
+  sendRestCssRequest: async (): Promise<Configs> =>
+    await ipcRenderer.invoke(IPC_CHANNELS.REQUEST_RESET_CSS_CHANNEL),
   getVersion: () => {
     return {
       app: version,

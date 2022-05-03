@@ -27,7 +27,24 @@ autoUpdater.on('download-progress', () => {
 });
 autoUpdater.on('update-downloaded', (_info: UpdateInfo) => {
   log.info('Finish update downloaded');
+  confirmAppUpdate();
 });
 app.once('ready', async () => {
-  autoUpdater.checkForUpdatesAndNotify();
+  autoUpdater.checkForUpdates();
 });
+
+/**
+ * 今すぐアップデートするか聞き、アップデートを行う
+ */
+async function confirmAppUpdate(): Promise<void> {
+  const result = await dialog.showMessageBox({
+    message:
+      'アップデートが可能です。今アップデートを行いますか\n※ここでアップデートを行わなくても次回アプリ起動時に自動でアップデートされます',
+    type: 'info',
+    buttons: ['Yes', 'No'],
+    title: 'Update Confirm - OLCV',
+  });
+  if (result.response == 0) {
+    autoUpdater.quitAndInstall();
+  }
+}

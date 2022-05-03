@@ -149,8 +149,8 @@ export class ViewWindow implements ElectronWindow {
       this.view.webContents.insertCSS(css).then((value) => {
         this.insertCSSKey = value;
       });
-      this.store.set('insert-css', insertCss);
     }
+    this.store.set('insert-css', insertCss);
   }
   /**
    * Cssの適用を削除するだけストアには反映しない
