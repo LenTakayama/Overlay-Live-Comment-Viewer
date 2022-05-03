@@ -30,6 +30,10 @@ button {
 }
 .row {
   display: flex;
+  justify-content: center;
+}
+.col-right{
+  margin-left: 10px;
 }
 .col-1 {
   display: inline-block;

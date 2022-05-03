@@ -1,6 +1,7 @@
-import { app, Menu, nativeImage, Tray } from 'electron';
+import { app, dialog, Menu, nativeImage, Tray } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { join } from 'path';
+import { gt } from 'semver';
 import { Application } from './application';
 import { getExtraDirectory } from './utility';
 
@@ -44,7 +45,18 @@ export function createTray(application: Application): Tray {
     {
       id: '4',
       label: '更新確認',
-      click: () => autoUpdater.checkForUpdatesAndNotify(),
+      click: () =>
+        autoUpdater.checkForUpdatesAndNotify().then((result) => {
+          if (result) {
+            // 更新先が現在バージョンより大きかった場合updater側で処理するため何もしない
+            if (gt(result.updateInfo.version, app.getVersion())) return;
+          }
+          dialog.showMessageBox({
+            type: 'info',
+            message: '更新はありませんでした',
+            title: 'Update Checker - OLCV',
+          });
+        }),
     },
     {
       id: '5',

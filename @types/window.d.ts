@@ -7,7 +7,7 @@ declare global {
       getConfigs(): Promise<Configs>;
       pushConfigs(config: Configs): Promise<void>;
       sendResetConfigsRequest(): Promise<Configs>;
-      sendDefaultCss(): Promise<void>;
+      sendRestCssRequest(): Promise<Configs>;
       getVersion(): Versions;
       displayComment(): Promise<void>;
       hideComment(): Promise<void>;

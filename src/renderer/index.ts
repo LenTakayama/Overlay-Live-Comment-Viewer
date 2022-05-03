@@ -27,6 +27,7 @@ class Index {
     this.addDropFileEvent();
     this.addOneCommeBootButtonClick();
     this.addCssSelectBoxChangeEvent();
+    this.addSaveAndDisplayCommentButtonClickEvent();
 
     // 仕様変更によりローカルストレージを使わなくなったためデータを削除
     this.resetLocalStorage();
@@ -149,12 +150,10 @@ class Index {
 
   private addResetClickEvent(): void {
     document.getElementById('reset')?.addEventListener('click', async () => {
-      if (confirm('設定を初期設定に戻しますがよろしいでしょうか？')) {
-        await window.electronApis.sendResetConfigsRequest().then((configs) => {
-          this.configs = configs;
-          this.setDisplayConfigs();
-        });
-      }
+      this.configs = await window.electronApis
+        .sendResetConfigsRequest()
+        .catch(() => this.configs);
+      this.setDisplayConfigs();
     });
   }
 
@@ -162,12 +161,10 @@ class Index {
     document
       .getElementById('default-css')
       ?.addEventListener('click', async () => {
-        if (confirm('CSSを初期設定に戻しますがよろしいでしょうか？')) {
-          if (this.configs?.insertCss.css) {
-            this.configs.insertCss.css = undefined;
-          }
-          await window.electronApis.sendDefaultCss();
-        }
+        this.configs = await window.electronApis
+          .sendRestCssRequest()
+          .catch(() => this.configs);
+        this.setDisplayConfigs();
       });
   }
 
@@ -196,10 +193,10 @@ class Index {
       if (urlElement) {
         element.addEventListener(
           'drop',
-          function (e) {
+          (e) => {
             e.stopPropagation();
             e.preventDefault();
-            this.style.background = 'darkgrey';
+            element.style.background = 'darkgrey';
             const files = e.dataTransfer?.files;
             if (!files) {
               return;
@@ -210,6 +207,8 @@ class Index {
               ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 files.item(0)!.path
               : '';
+            // ドロップされたら設定を保存
+            this.pushConfigs();
           },
           false
         );
@@ -226,10 +225,17 @@ class Index {
   }
 
   private addCssSelectBoxChangeEvent() {
-    const element = <HTMLSelectElement>document.getElementById('select_css');
+    const element = this.getSelectElementById('select_css');
     element.addEventListener('change', () => {
-      // saveボタンをクリックすることで設定値を反映させる
-      this.getInputElementById('save').click();
+      this.pushConfigs();
+    });
+  }
+
+  private addSaveAndDisplayCommentButtonClickEvent() {
+    const button = this.getInputElementById('save_and_display_comment');
+    button.addEventListener('click', async () => {
+      await this.pushConfigs();
+      window.electronApis.displayComment();
     });
   }
 }

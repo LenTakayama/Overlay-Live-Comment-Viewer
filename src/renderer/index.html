@@ -11,8 +11,10 @@
       <div class="left">
         <label for="url"><h1>URL</h1></label>
         <input type="text" id="url" name="url" class="url" />
-        <div class="drop-area" id="drop-area">
-          <p>HTMLをここにドロップ</p>
+        <div>
+          <button id="save_and_display_comment" class="save">
+            設定保存・コメント表示
+          </button>
         </div>
       </div>
       <div class="right">
@@ -26,11 +28,11 @@
           <label for="css">ユーザーカスタムCSS</label>
           <textarea name="css" id="css" cols="30" rows="10"></textarea>
         </div>
-        <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
+        <button id="default-css" class="reset">CSSの設定を初期化する</button>
       </div>
     </div>
     <div class="row">
-      <div>
+      <div class="col">
         <h1>画面配置</h1>
         <div>
           <label for="right">右側に配置</label>
@@ -41,7 +43,7 @@
           <input type="checkbox" name="bottom" id="bottom" />
         </div>
       </div>
-      <div>
+      <div class="col-right">
         <h1>コメント欄サイズ</h1>
         <div>
           <span><label for="width" class="col-1">幅</label></span>
@@ -85,6 +87,10 @@
         <h1>アプリ連携設定</h1>
       </summary>
       <div>
+        <h2>わんコメ</h2>
+        <div class="drop-area" id="drop-area">
+          <p>わんコメテンプレートをここにドロップ</p>
+        </div>
         <label for="one_comme_onboot"
           >起動時にわんコメをあわせて立ち上げる</label
         >
@@ -94,7 +100,7 @@
         </button>
       </div>
       <div>
-        <label for="one_comme_path">わんコメのパス</label>
+        <label for="one_comme_path">わんコメアプリのパス</label>
         <br />
         <input
           type="text"
@@ -107,7 +113,7 @@
     <hr />
     <div>
       <button id="save" class="save">保存</button>
-      <button id="reset" class="reset">設定を初期化する</button>
+      <button id="reset" class="reset">OLCVの設定を初期化する</button>
     </div>
     <br />
     <div>
