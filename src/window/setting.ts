@@ -7,7 +7,7 @@ import { closeWindow } from './utility';
 export class SettingWindow implements ElectronWindow {
   public window?: BrowserWindow;
   public menu: Menu;
-  readonly REST_CSS_MESSAGE = 'ユーザーカスタムCSSとCSSの選択を初期化します';
+  readonly REST_CSS_MESSAGE = 'CSSの設定を初期化します';
   readonly REST_CONFIG_MESSAGE = 'OLCVの設定を初期化します';
 
   constructor(menu: Menu) {
