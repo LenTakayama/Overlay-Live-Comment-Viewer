@@ -163,12 +163,10 @@ class Index {
     document
       .getElementById('default-css')
       ?.addEventListener('click', async () => {
-        if (confirm('CSSを初期設定に戻しますがよろしいでしょうか？')) {
-          if (this.configs?.insertCss.css) {
-            this.configs.insertCss.css = undefined;
-          }
-          await window.electronApis.sendDefaultCss();
-        }
+        this.configs = await window.electronApis
+          .sendRestCssRequest()
+          .catch(() => this.configs);
+        this.setDisplayConfigs();
       });
   }
 

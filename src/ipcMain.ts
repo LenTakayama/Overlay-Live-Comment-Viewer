@@ -19,9 +19,19 @@ export function addIpcMainHandles(application: Application): void {
     return application.getConfigs();
   });
 
-  ipcMain.handle('default-css', async () => {
-    application.viewWindow.resetCss();
-  });
+  ipcMain.handle(
+    IPC_CHANNELS.REQUEST_RESET_CSS_CHANNEL,
+    async (): Promise<Configs> => {
+      const isAgree = await application.settingWindow.openConfirmDialog(
+        application.settingWindow.REST_CSS_MESSAGE
+      );
+      if (isAgree) {
+        application.viewWindow.resetCss();
+        return application.getConfigs();
+      }
+      return Promise.reject('user reject reset css');
+    }
+  );
 
   ipcMain.handle('display-comment', () => {
     if (!application.viewWindow.window) {
