@@ -150,12 +150,10 @@ class Index {
 
   private addResetClickEvent(): void {
     document.getElementById('reset')?.addEventListener('click', async () => {
-      if (confirm('設定を初期設定に戻しますがよろしいでしょうか？')) {
-        await window.electronApis.sendResetConfigsRequest().then((configs) => {
-          this.configs = configs;
-          this.setDisplayConfigs();
-        });
-      }
+      this.configs = await window.electronApis
+        .sendResetConfigsRequest()
+        .catch(() => this.configs);
+      this.setDisplayConfigs();
     });
   }
 
