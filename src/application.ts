@@ -9,6 +9,7 @@ import { createMenu } from './window/menu';
 import { ReadmeWindow } from './window/readme';
 import { SettingWindow } from './window/setting';
 import { ViewWindow } from './window/view';
+import { url as urlList } from './allowURLs.json';
 
 export class Application implements ApplicationInterface {
   public settingWindow: SettingWindow;
@@ -118,13 +119,7 @@ export class Application implements ApplicationInterface {
     app.on('web-contents-created', (_event, contents) => {
       contents.setWindowOpenHandler((details) => {
         const url = details.url;
-        if (
-          url ===
-            'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/blob/develop/README.md' ||
-          url === 'https://twitter.com/Len_Takayama' ||
-          url ===
-            'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues'
-        ) {
+        if (urlList.includes(url)) {
           shell.openExternal(url);
         }
         return { action: 'deny' };
