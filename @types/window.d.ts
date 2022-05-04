@@ -5,7 +5,7 @@ declare global {
   interface Window {
     electronApis: {
       getConfigs(): Promise<Configs>;
-      pushConfigs(config: Configs): Promise<void>;
+      pushConfigs(config: Configs): Promise<Configs>;
       sendResetConfigsRequest(): Promise<Configs>;
       sendRestCssRequest(): Promise<Configs>;
       getVersion(): Versions;

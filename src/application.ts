@@ -9,6 +9,7 @@ import { createMenu } from './window/menu';
 import { ReadmeWindow } from './window/readme';
 import { SettingWindow } from './window/setting';
 import { ViewWindow } from './window/view';
+import { url as urlList } from './allowURLs.json';
 
 export class Application implements ApplicationInterface {
   public settingWindow: SettingWindow;
@@ -60,7 +61,7 @@ export class Application implements ApplicationInterface {
       oneCommeConfig: oneCommeConfig,
     };
   }
-  public setConfigs(configs: Configs) {
+  public setConfigs(configs: Configs): Configs {
     this.viewWindow.setURL(configs.loadUrl.url);
     this.viewWindow.setCss(configs.insertCss);
     this.viewWindow.setWindowPositionAndSize(
@@ -73,6 +74,8 @@ export class Application implements ApplicationInterface {
     this.store.set('onBootConfig', configs.onBootConfig);
     // 呼び出されるたびにストアからアクセスしているので保存するだけ
     this.store.set('oneCommeConfig', configs.oneCommeConfig);
+
+    return this.getConfigs();
   }
   public resetConfig(): void {
     this.viewWindow.clearURL();
@@ -118,13 +121,7 @@ export class Application implements ApplicationInterface {
     app.on('web-contents-created', (_event, contents) => {
       contents.setWindowOpenHandler((details) => {
         const url = details.url;
-        if (
-          url ===
-            'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/blob/develop/README.md' ||
-          url === 'https://twitter.com/Len_Takayama' ||
-          url ===
-            'https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/issues'
-        ) {
+        if (urlList.includes(url)) {
           shell.openExternal(url);
         }
         return { action: 'deny' };

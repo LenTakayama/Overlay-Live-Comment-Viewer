@@ -10,8 +10,8 @@ export function addIpcMainHandles(application: Application): void {
   });
   ipcMain.handle(
     IPC_CHANNELS.PUSH_CONFIGS_CHANNEL,
-    (_e, configs: Configs): void => {
-      application.setConfigs(configs);
+    (_e, configs: Configs): Configs => {
+      return application.setConfigs(configs);
     }
   );
   ipcMain.handle(
