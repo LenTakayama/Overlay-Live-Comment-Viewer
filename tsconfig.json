@@ -70,9 +70,12 @@
 
     /* Advanced Options */
     "skipLibCheck": true /* Skip type checking of declaration files. */,
-    "forceConsistentCasingInFileNames": true, /* Disallow inconsistently-cased references to the same file. */
+    "forceConsistentCasingInFileNames": true /* Disallow inconsistently-cased references to the same file. */,
     "resolveJsonModule": true
   },
-  "include": ["./src/**/*", "./types/**/*"],
+  "watchOptions": {
+    "excludeDirectories": ["node_modules", "build", "public"]
+  },
+  "include": ["./src/**/*", "./@types/**/*"],
   "exclude": ["dist", "node_modules", "webpack.config.js"]
 }

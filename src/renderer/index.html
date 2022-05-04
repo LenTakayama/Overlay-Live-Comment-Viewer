@@ -11,15 +11,28 @@
       <div class="left">
         <label for="url"><h1>URL</h1></label>
         <input type="text" id="url" name="url" class="url" />
+        <div>
+          <button id="save_and_display_comment" class="save">
+            設定保存・コメント表示
+          </button>
+        </div>
       </div>
       <div class="right">
-        <label for="css"><h1>CSS</h1></label>
-        <textarea name="css" id="css" cols="30" rows="10"></textarea>
-        <button id="default-css" class="reset">CSSをデフォルトに戻す</button>
+        <h1>CSS</h1>
+        <label for="select_css">読み込むCSSを選択：</label>
+        <select name="select-css" id="select_css">
+          <option value="youtube_default" selected>YouTube</option>
+          <option value="user_custom">ユーザーカスタム</option>
+        </select>
+        <div>
+          <label for="css">ユーザーカスタムCSS</label>
+          <textarea name="css" id="css" cols="30" rows="10"></textarea>
+        </div>
+        <button id="default-css" class="reset">CSSの設定を初期化する</button>
       </div>
     </div>
     <div class="row">
-      <div>
+      <div class="col">
         <h1>画面配置</h1>
         <div>
           <label for="right">右側に配置</label>
@@ -30,7 +43,7 @@
           <input type="checkbox" name="bottom" id="bottom" />
         </div>
       </div>
-      <div>
+      <div class="col-right">
         <h1>コメント欄サイズ</h1>
         <div>
           <span><label for="width" class="col-1">幅</label></span>
@@ -47,23 +60,65 @@
       </div>
     </div>
     <div>
+      <h1>起動設定</h1>
       <div>
-        <h1>通知</h1>
-        <div>
-          <label for="onBoot">起動時通知する</label>
-          <input type="checkbox" name="onBoot" id="onBoot" />
-        </div>
-        <div>
-          <label for="noSound">音声通知しない</label>
-          <input type="checkbox" name="noSound" id="noSound" />
-        </div>
+        <label for="on_boot_open_setting">起動時設定画面を開く</label>
+        <input
+          type="checkbox"
+          name="on_boot_open_setting"
+          id="on_boot_open_setting"
+        />
+      </div>
+      <div>
+        <label for="on_boot_notification">起動時通知する</label>
+        <input
+          type="checkbox"
+          name="on_boot_notification"
+          id="on_boot_notification"
+        />
+      </div>
+      <div>
+        <label for="noSound">音声通知しない</label>
+        <input type="checkbox" name="noSound" id="noSound" />
       </div>
     </div>
+    <details>
+      <summary>
+        <h1>アプリ連携設定</h1>
+      </summary>
+      <div>
+        <h2>わんコメ</h2>
+        <div class="drop-area" id="drop-area">
+          <p>わんコメテンプレートをここにドロップ</p>
+        </div>
+        <label for="one_comme_onboot"
+          >起動時にわんコメをあわせて立ち上げる</label
+        >
+        <input type="checkbox" name="one-comme-onboot" id="one_comme_onboot" />
+        <button class="display" name="one-comme-boot" id="one_comme_boot">
+          わんコメ起動
+        </button>
+      </div>
+      <div>
+        <label for="one_comme_path">わんコメアプリのパス</label>
+        <br />
+        <input
+          type="text"
+          class="one-comme-path"
+          name="one-comme-path"
+          id="one_comme_path"
+        />
+      </div>
+    </details>
     <hr />
     <div>
-      <button id="display" class="display">コメント表示</button>
       <button id="save" class="save">保存</button>
-      <button id="reset" class="reset">設定を初期化する</button>
+      <button id="reset" class="reset">OLCVの設定を初期化する</button>
+    </div>
+    <br />
+    <div>
+      <button id="display" class="display">コメント表示</button>
+      <button id="hide_comment" class="hide-comment">コメント非表示</button>
     </div>
     <footer>
       <div id="version"></div>

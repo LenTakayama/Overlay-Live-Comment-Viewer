@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const FixStyleOnlyEntriesPlugin = require('webpack-fix-style-only-entries');
+const RemoveEmptyScriptsPlugin = require('webpack-remove-empty-scripts');
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -58,13 +58,18 @@ const base = {
     ],
     plugins: [new TsconfigPathsPlugin()],
   },
+  cache: {
+    type: 'filesystem',
+    buildDependencies: {
+      config: [__filename],
+    },
+  },
 };
 
 const tsLoaderConfig = {
   test: /.tsx?$/,
   exclude: /node_modules/,
   use: [
-    { loader: 'cache-loader' },
     {
       loader: 'thread-loader',
       options: {
@@ -90,9 +95,6 @@ const tsLoaderConfig = {
 };
 
 const forkTsCheckerConfig = {
-  eslint: {
-    files: './src/**/*.{ts,tsx,js,jsx}',
-  },
   typescript: {
     configFile: isDev ? 'tsconfig.json' : 'tsconfig.production.json',
     diagnosticOptions: {
@@ -126,7 +128,7 @@ const cssLoaderConfig = {
       options: {
         sourceMap: isDev,
         sassOptions: {
-          fiber: require('fibers'),
+          fiber: false,
         },
       },
     },
@@ -137,7 +139,7 @@ const main = {
   ...base,
   target: 'electron-main',
   entry: {
-    main: join(__dirname, 'src', 'main'),
+    main: join(__dirname, 'src', 'index'),
   },
   output: {
     filename: '[name].js',
@@ -153,7 +155,7 @@ const preload = {
   ...base,
   target: 'electron-preload',
   entry: {
-    preload: join(__dirname, 'src', 'preload'),
+    preload: join(__dirname, 'src', 'preload', 'preload'),
   },
   output: {
     filename: '[name].js',
@@ -183,7 +185,7 @@ const renderer = {
     ],
   },
   output: {
-    filename: '[name]-[hash].bundle.js',
+    filename: '[name].bundle.js',
     path: buildDirPath,
   },
   module: {
@@ -206,7 +208,7 @@ const renderer = {
       filename: 'readme.html',
     }),
     new MiniCssExtractPlugin({
-      filename: '[name]-[hash].bundle.css',
+      filename: '[name].bundle.css',
       chunkFilename: '[id].css',
     }),
     new ForkTsCheckerWebpackPlugin(forkTsCheckerConfig),
@@ -242,7 +244,7 @@ const asset = {
         },
       ],
     }),
-    new FixStyleOnlyEntriesPlugin(),
+    new RemoveEmptyScriptsPlugin(),
   ],
 };
 

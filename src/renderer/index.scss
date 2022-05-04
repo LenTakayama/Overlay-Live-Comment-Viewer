@@ -30,6 +30,10 @@ button {
 }
 .row {
   display: flex;
+  justify-content: center;
+}
+.col-right{
+  margin-left: 10px;
 }
 .col-1 {
   display: inline-block;
@@ -47,7 +51,8 @@ button {
   }
 }
 .display,
-.save {
+.save,
+.hide-comment {
   background: dodgerblue;
   border: solid 1px rgb(21, 85, 148);
   &:hover {
@@ -55,6 +60,30 @@ button {
   }
 }
 textarea,
-.url {
+.url,
+.one-comme-path {
   width: 95%;
+}
+.drop-area {
+  background-color: gray;
+}
+summary {
+  list-style: none;
+  position: relative;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+summary::after {
+  content: '▽';
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  transition: transform 0.5s;
+  font-size: 30px;
+}
+summary:hover,
+details[open] summary {
+  background-color: #bc9e04;
 }

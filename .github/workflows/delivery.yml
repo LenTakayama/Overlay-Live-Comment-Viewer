@@ -8,18 +8,19 @@ jobs:
   build:
     name: Build
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
 
     strategy:
       matrix:
-        os: [windows-latest]
-        node: [14.16.0]
+        os: [windows-2022]
+        node: [16.13.0]
 
     steps:
       - name: Set git to use LF
         run: |
           git config --global core.autocrlf false
           git config --global core.eol lf
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
