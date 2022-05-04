@@ -6,8 +6,8 @@ import { Configs } from '~/@types/main';
 contextBridge.exposeInMainWorld('electronApis', {
   getConfigs: async (): Promise<Configs> =>
     await ipcRenderer.invoke(IPC_CHANNELS.GET_CONFIGS_CHANNEL),
-  pushConfigs: async (config: Configs) => {
-    await ipcRenderer.invoke(IPC_CHANNELS.PUSH_CONFIGS_CHANNEL, config);
+  pushConfigs: async (config: Configs): Promise<Configs> => {
+    return await ipcRenderer.invoke(IPC_CHANNELS.PUSH_CONFIGS_CHANNEL, config);
   },
   sendResetConfigsRequest: async (): Promise<Configs> =>
     await (<Promise<Configs>>(

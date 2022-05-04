@@ -61,7 +61,7 @@ export class Application implements ApplicationInterface {
       oneCommeConfig: oneCommeConfig,
     };
   }
-  public setConfigs(configs: Configs) {
+  public setConfigs(configs: Configs): Configs {
     this.viewWindow.setURL(configs.loadUrl.url);
     this.viewWindow.setCss(configs.insertCss);
     this.viewWindow.setWindowPositionAndSize(
@@ -74,6 +74,8 @@ export class Application implements ApplicationInterface {
     this.store.set('onBootConfig', configs.onBootConfig);
     // 呼び出されるたびにストアからアクセスしているので保存するだけ
     this.store.set('oneCommeConfig', configs.oneCommeConfig);
+
+    return this.getConfigs();
   }
   public resetConfig(): void {
     this.viewWindow.clearURL();

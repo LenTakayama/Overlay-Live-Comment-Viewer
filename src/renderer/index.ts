@@ -105,7 +105,7 @@ class Index {
       document.getElementById('one_comme_path')
     )).value;
 
-    await window.electronApis.pushConfigs({
+    this.configs = await window.electronApis.pushConfigs({
       loadUrl: { url: urlValue },
       insertCss: { css: cssValue, cssMode: cssModeValue },
       windowConfig: {
@@ -150,10 +150,20 @@ class Index {
 
   private addResetClickEvent(): void {
     document.getElementById('reset')?.addEventListener('click', async () => {
-      this.configs = await window.electronApis
+      window.electronApis
         .sendResetConfigsRequest()
-        .catch(() => this.configs);
-      this.setDisplayConfigs();
+        .then((configs) => {
+          this.configs = configs;
+          this.setDisplayConfigs();
+        })
+        .catch((e) => {
+          if (
+            e.message !==
+            "Error invoking remote method 'RESET_CONFIGS_REQUEST_CHANNEL': user reject reset config"
+          ) {
+            throw e;
+          }
+        });
     });
   }
 
@@ -161,10 +171,20 @@ class Index {
     document
       .getElementById('default-css')
       ?.addEventListener('click', async () => {
-        this.configs = await window.electronApis
+        window.electronApis
           .sendRestCssRequest()
-          .catch(() => this.configs);
-        this.setDisplayConfigs();
+          .then((configs) => {
+            this.configs = configs;
+            this.setDisplayConfigs();
+          })
+          .catch((e) => {
+            if (
+              e.message !==
+              "Error invoking remote method 'REQUEST_RESET_CSS_CHANNEL': user reject reset css"
+            ) {
+              throw e;
+            }
+          });
       });
   }
 
