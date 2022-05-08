@@ -14,15 +14,17 @@ export const store = new ElectronStore<StoreSchema>({
       const notificationConfig = <NotificationConfig>(
         migStore.get('notification')
       );
-      migStore.set('onBootConfig', {
-        noSound: notificationConfig.noSound,
-        notification: notificationConfig.onBoot,
-        openSetting: true,
-      });
-      // スキーマからはずしたため削除しようとするとTSのチェックでエラーになるため除外
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      migStore.delete('notification');
+      if (notificationConfig) {
+        migStore.set('onBootConfig', {
+          noSound: notificationConfig.noSound,
+          notification: notificationConfig.onBoot,
+          openSetting: true,
+        });
+        // スキーマからはずしたため削除しようとするとTSのチェックでエラーになるため除外
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        migStore.delete('notification');
+      }
     },
     '1.0.0': (migStore) => {
       const oldData = migStore.get('window-size', {
