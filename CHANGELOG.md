@@ -18,6 +18,12 @@
 - マルチディスプレイ対応
 - 自動起動機能
 
+## [1.1.3] - 2020-05-26
+
+### Fixed
+
+- 起動時に reading 'noSound'エラーが発生するバグに対応
+
 ## [1.1.0] - 2022-05-01
 
 ### Added
@@ -127,6 +133,7 @@
 - 設定初期化機能
 
 [unreleased]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/master...develop
+[1.1.3]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.1.0...v1.1.3
 [1.1.0]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.4...v1.1.0
 [1.0.4]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/LenTakayama/Overlay-Live-Comment-Viewer/compare/v1.0.2...v1.0.3
