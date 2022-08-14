@@ -15,7 +15,6 @@ export class ReadmeWindow implements ElectronWindow {
       height: 700,
       width: 500,
       webPreferences: {
-        sandbox: true,
         safeDialogs: true,
         enableWebSQL: false,
       },

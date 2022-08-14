@@ -27,6 +27,7 @@ export class Application implements ApplicationInterface {
     this.viewWindow = new ViewWindow(this.store);
     this.readmeWindow = new ReadmeWindow();
 
+    app.enableSandbox(); // readyよりも前に呼び出す必要がある
     this.addOnReadyEventHandler();
     this.addOnWebContentsCreatedEventHandler();
     app.on('window-all-closed', () => null);
