@@ -39,7 +39,6 @@ jobs:
       - name: Install package
         run: |
           npm ci
-          npm audit fix
       - name: Build production
         run: npm run production
         env:

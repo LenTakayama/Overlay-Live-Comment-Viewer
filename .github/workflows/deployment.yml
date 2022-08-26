@@ -40,7 +40,6 @@ jobs:
       - name: Install package
         run: |
           npm ci
-          npm audit fix
       - name: Build and Draft release
         uses: samuelmeuli/action-electron-builder@v1
         with:
