@@ -45,7 +45,6 @@ export class ViewWindow implements ElectronWindow {
     });
     this.view = new BrowserView({
       webPreferences: {
-        sandbox: true,
         safeDialogs: true,
         enableWebSQL: false,
       },

@@ -22,7 +22,6 @@ export class SettingWindow implements ElectronWindow {
       height: 760,
       width: 400,
       webPreferences: {
-        sandbox: true,
         enableWebSQL: false,
         preload: join(getResourceDirectory(), 'preload.js'),
       },

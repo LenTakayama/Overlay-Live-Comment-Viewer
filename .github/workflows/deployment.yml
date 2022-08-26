@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-2022]
-        node: [16.13.0]
+        node: [16.15.0]
 
     steps:
       - name: Set git to use LF
@@ -40,7 +40,6 @@ jobs:
       - name: Install package
         run: |
           npm ci
-          npm audit fix
       - name: Build and Draft release
         uses: samuelmeuli/action-electron-builder@v1
         with:
