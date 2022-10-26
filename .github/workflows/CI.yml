@@ -9,51 +9,43 @@ jobs:
     name: Lint
     timeout-minutes: 3
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
     steps:
       - uses: actions/checkout@v3
-      - name: Review ESLint
-        uses: reviewdog/action-eslint@v1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
-          eslint_flags: 'src/'
-          fail_on_error: true
+          node-version-file: '.node-version'
+          cache: 'npm'
+
+      - name: Install package
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint:output
+        continue-on-error: true
+
+      - name: Upload analysis results to GitHub
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: tmp/eslint-results.sarif
+          wait-for-processing: true
 
   test:
     name: Test
     timeout-minutes: 3
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-20.04]
-        node: [16.15.0]
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
+
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
         with:
-          node-version: ${{ matrix.node }}
-      - name: Get npm cache directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
+          output: report-markdown
+      - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-v${{ matrix.node }}-
-            ${{ runner.os }}-node-
-      - name: Install package
-        run: npm ci
-      - name: Run Jest
-        run: npm run jest -- --json --outputFile="jest.results.json"
-      - name: Show test result
-        uses: mattallty/jest-github-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          test-command: 'npm run jest'
+          message: ${{ steps.coverage.outputs.report }}

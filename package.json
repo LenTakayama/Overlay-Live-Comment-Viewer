@@ -8,7 +8,7 @@
     "production": "run-s clean:output clean:cache build:pro package:winx86",
     "jest": "jest",
     "e2e": "echo todo",
-    "lint": "eslint src",
+    "lint": "eslint src @types",
     "serve": "electron .",
     "asar": "asar extract dist/win-unpacked/resources/app.asar dist/win-unpacked/resources/app",
     "clean:output": "rimraf build dist public",
@@ -17,7 +17,8 @@
     "build:pro": "cross-env NODE_ENV=\"production\" webpack --progress",
     "package:winx64": "electron-builder --win --x64 --config ./electron-builder-x64.yml",
     "package:winx86": "electron-builder --win --ia32",
-    "package:macx64": "electron-builder --mac --x64"
+    "package:macx64": "electron-builder --mac --x64",
+    "lint:output": "npm run lint -- --format @microsoft/eslint-formatter-sarif --output-file tmp/eslint-results.sarif"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "@babel/eslint-parser": "^7.18.9",
     "@babel/plugin-proposal-optional-chaining": "^7.18.9",
     "@babel/preset-env": "^7.18.10",
+    "@microsoft/eslint-formatter-sarif": "^3.0.0",
     "@types/jest": "^28.1.6",
     "@types/webpack": "^5.28.0",
     "@typescript-eslint/eslint-plugin": "^5.33.0",

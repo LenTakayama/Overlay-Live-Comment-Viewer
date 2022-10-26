@@ -12,8 +12,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [windows-2022]
-        node: [16.15.0]
+        os: [windows-latest]
 
     steps:
       - name: Set git to use LF
@@ -22,20 +21,10 @@ jobs:
           git config --global core.eol lf
       - uses: actions/checkout@v3
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node }}
-      - name: Get npm cache directory
-        id: npm-cache
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.npm-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-v${{ matrix.node }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-v${{ matrix.node }}-
-            ${{ runner.os }}-node-
+          node-version-file: '.node-version'
+          cache: 'npm'
       - name: Install package
         run: |
           npm ci
