@@ -38,26 +38,14 @@ jobs:
   test:
     name: Test
     timeout-minutes: 3
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+
+      - uses: ArtiomTr/jest-coverage-report-action@v2
+        id: coverage
         with:
-          node-version-file: '.node-version'
-          cache: 'npm'
-      - name: Install package
-        run: npm ci
-      - name: Run Jest
-        run: npm run jest -- --json --outputFile="jest.results.json"
-      - name: Show test result
-        uses: mattallty/jest-github-action@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          output: report-markdown
+      - uses: marocchino/sticky-pull-request-comment@v2
         with:
-          test-command: 'npm run jest'
+          message: ${{ steps.coverage.outputs.report }}
