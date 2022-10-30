@@ -106,3 +106,5 @@ dist
 # 生成ファイルの置き場
 build
 public
+tmp
+img
