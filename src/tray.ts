@@ -9,7 +9,7 @@ import { getExtraDirectory } from './utility';
 export function createTray(application: Application): Tray {
   const config = application.store.get('onBootConfig');
   const tray = new Tray(
-    nativeImage.createFromPath(join(getExtraDirectory(), 'win_icon.png'))
+    nativeImage.createFromPath(join(getExtraDirectory(), 'win_icon.ico'))
   );
   const menu = Menu.buildFromTemplate([
     {
